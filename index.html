@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D.Paradox | Portfolio</title>
+<meta name="description" content="Portfolio of Eren (D.Paradox) - Android developer, Telegram bot builder and writer.">
+<meta name="theme-color" content="#141218">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  /* Apply the saved or system theme before first paint to avoid a flash */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.dataset.theme = t;
+    document.documentElement.classList.add('js');
+  })();
+</script>
+<style>
+/* ---------- Material 3 design tokens ---------- */
+:root, :root[data-theme="dark"] {
+  --primary:#D0BCFF; --on-primary:#381E72; --primary-container:#4F378B; --on-primary-container:#EADDFF;
+  --secondary:#CCC2DC; --secondary-container:#4A4458; --on-secondary-container:#E8DEF8;
+  --tertiary:#EFB8C8; --tertiary-container:#633B48; --on-tertiary-container:#FFD8E4;
+  --surface:#141218; --on-surface:#E6E0E9; --on-surface-variant:#CAC4D0;
+  --outline:#938F99; --outline-variant:#49454F;
+  --sc-low:#1D1B20; --sc:#211F26; --sc-high:#2B2930; --sc-highest:#36343B;
+  --inverse-surface:#E6E0E9; --inverse-on-surface:#322F35;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --primary:#6750A4; --on-primary:#FFFFFF; --primary-container:#EADDFF; --on-primary-container:#21005D;
+  --secondary:#625B71; --secondary-container:#E8DEF8; --on-secondary-container:#1D192B;
+  --tertiary:#7D5260; --tertiary-container:#FFD8E4; --on-tertiary-container:#31111D;
+  --surface:#FEF7FF; --on-surface:#1D1B20; --on-surface-variant:#49454F;
+  --outline:#79747E; --outline-variant:#CAC4D0;
+  --sc-low:#F7F2FA; --sc:#F3EDF7; --sc-high:#ECE6F0; --sc-highest:#E6E0E9;
+  --inverse-surface:#322F35; --inverse-on-surface:#F5EFF7;
+  color-scheme: light;
+}
+:root {
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:28px; --r-full:999px;
+  --font:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.2,0,0,1);
+}
+
+/* ---------- Base ---------- */
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body {
+  margin:0; background:var(--surface); color:var(--on-surface);
+  font:400 16px/24px var(--font); letter-spacing:.5px; overflow-wrap:anywhere;
+  padding-bottom:env(safe-area-inset-bottom,0);
+}
+h1,h2,h3,p,ul { margin:0; padding:0; }
+ul { list-style:none; }
+a { color:inherit; text-decoration:none; }
+:focus-visible { outline:3px solid var(--primary); outline-offset:2px; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.skip { position:absolute; left:16px; top:-64px; z-index:100; padding:12px 20px; border-radius:var(--r-full); background:var(--primary); color:var(--on-primary); transition:top .2s; }
+.skip:focus { top:12px; }
+svg.i { width:24px; height:24px; fill:currentColor; flex:none; }
+.wrap { max-width:960px; margin-inline:auto; padding-inline:16px; }
+
+/* ---------- Top app bar + tabs ---------- */
+.appbar { position:sticky; top:0; z-index:20; background:var(--surface); transition:background .25s var(--ease), box-shadow .25s var(--ease); padding-top:env(safe-area-inset-top,0); }
+.appbar.scrolled { background:var(--sc); box-shadow:0 1px 0 var(--outline-variant); }
+.appbar__row { display:flex; align-items:center; justify-content:space-between; height:64px; }
+.appbar__title { font:500 22px/28px var(--font); letter-spacing:0; }
+.appbar__title span { color:var(--primary); }
+.icon-btn { position:relative; display:grid; place-items:center; width:48px; height:48px; border:0; border-radius:var(--r-full); background:none; color:var(--on-surface-variant); cursor:pointer; }
+.icon-btn[data-theme-icon] .moon { display:none; }
+:root[data-theme="light"] .icon-btn .sun { display:none; }
+:root[data-theme="light"] .icon-btn .moon { display:block; }
+.tabs { display:flex; overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--outline-variant); }
+.tabs::-webkit-scrollbar { display:none; }
+.tab { position:relative; flex:none; padding:14px 18px; font:500 14px/20px var(--font); letter-spacing:.1px; color:var(--on-surface-variant); border-radius:var(--r-sm) var(--r-sm) 0 0; }
+.tab[aria-current="true"] { color:var(--primary); }
+.tab[aria-current="true"]::after { content:""; position:absolute; left:12px; right:12px; bottom:0; height:3px; border-radius:3px 3px 0 0; background:var(--primary); }
+
+/* ---------- State layers (hover 8%, press 10%) ---------- */
+.icon-btn,.btn,.tab,.card--link { transition:background-color .2s var(--ease); }
+.icon-btn:hover,.tab:hover { background:color-mix(in srgb,var(--on-surface) 8%,transparent); }
+.icon-btn:active,.tab:active { background:color-mix(in srgb,var(--on-surface) 10%,transparent); }
+
+/* ---------- Buttons & chips ---------- */
+.btn { display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 24px; border:0; border-radius:var(--r-full); font:500 14px/20px var(--font); letter-spacing:.1px; cursor:pointer; }
+.btn svg.i { width:18px; height:18px; margin-left:-8px; }
+.btn--filled { background:var(--primary); color:var(--on-primary); }
+.btn--tonal { background:var(--secondary-container); color:var(--on-secondary-container); }
+.btn--outlined { border:1px solid var(--outline); background:none; color:var(--primary); }
+.btn--filled:hover { background:color-mix(in srgb,var(--on-primary) 8%,var(--primary)); box-shadow:0 1px 3px rgba(0,0,0,.35); }
+.btn--tonal:hover { background:color-mix(in srgb,var(--on-secondary-container) 8%,var(--secondary-container)); }
+.btn--outlined:hover { background:color-mix(in srgb,var(--primary) 8%,transparent); }
+.chips { display:flex; flex-wrap:wrap; gap:8px; }
+.chip { display:inline-flex; align-items:center; height:32px; padding:0 12px; border:1px solid var(--outline-variant); border-radius:var(--r-sm); font:500 14px/20px var(--font); letter-spacing:.1px; color:var(--on-surface-variant); }
+.chip--tonal { border:0; background:var(--secondary-container); color:var(--on-secondary-container); }
+
+/* ---------- Hero ---------- */
+.hero { margin-top:24px; padding:48px 24px; border-radius:var(--r-xl); background:linear-gradient(135deg,color-mix(in srgb,var(--primary-container) 60%,var(--surface)),var(--sc-low) 70%); }
+.songs { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+.song { display:flex; align-items:center; gap:12px; padding:8px 16px 8px 8px; border-radius:var(--r-md); background:var(--sc-high); transition:background-color .2s var(--ease); }
+.song:hover, a.char:hover { background:var(--sc-highest); }
+.song img { flex:none; width:96px; aspect-ratio:16/9; object-fit:cover; border-radius:var(--r-sm); background:var(--sc-highest); }
+.song div { display:flex; flex-direction:column; flex:1; min-width:0; }
+.song svg { color:var(--primary); }
+.ph { aspect-ratio:2/3; display:grid; place-items:center; padding:12px; text-align:center; font:500 16px/22px var(--font); background:linear-gradient(160deg,var(--primary-container),var(--tertiary-container)); color:var(--on-primary-container); }
+.avatar { display:block; width:96px; height:96px; margin-bottom:20px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); background:var(--sc-high); }
+.chars { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
+.char { display:flex; flex-direction:column; border-radius:var(--r-lg); overflow:hidden; background:var(--sc-high); }
+.char img { width:100%; aspect-ratio:3/4; object-fit:cover; display:block; background:var(--sc-highest); }
+.char span { padding:12px; font:500 14px/20px var(--font); letter-spacing:.1px; text-align:center; }
+.eyebrow { font:500 12px/16px var(--mono); letter-spacing:1.5px; text-transform:uppercase; color:var(--primary); }
+.hero__title { position:relative; margin:16px 0 28px; font:400 clamp(28px,5.5vw,45px)/1.22 var(--font); letter-spacing:0; }
+.hero__title .typed { position:absolute; inset:0; }
+.js .hero__title .ghost { visibility:hidden; }
+.typed::after { content:""; display:inline-block; width:3px; height:.95em; margin-left:3px; vertical-align:-.1em; background:var(--primary); animation:blink .9s step-end infinite; }
+.typed.done::after { display:none; }
+@keyframes blink { 50% { opacity:0; } }
+.hero__actions { display:flex; flex-wrap:wrap; gap:12px; }
+
+/* ---------- Sections ---------- */
+section { padding-top:64px; scroll-margin-top:112px; }
+.sec-head { margin-bottom:24px; }
+.sec-head h2 { margin-top:4px; font:400 28px/36px var(--font); letter-spacing:0; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+.card { display:flex; flex-direction:column; gap:12px; padding:16px 20px; border-radius:var(--r-lg); background:var(--sc-low); border:1px solid transparent; }
+.card--outlined { background:none; border-color:var(--outline-variant); }
+.card__label { font:500 12px/16px var(--font); letter-spacing:.5px; color:var(--primary); }
+.card__title { font:500 16px/24px var(--font); letter-spacing:.15px; }
+.card__text { font:400 14px/20px var(--font); letter-spacing:.25px; color:var(--on-surface-variant); }
+.card--link { position:relative; overflow:hidden; flex-direction:row; align-items:center; justify-content:space-between; gap:12px; background:var(--sc); }
+.card--link:hover { background:var(--sc-high); }
+.card--link svg.i { color:var(--primary); }
+.card--link > div { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.card--link .card__title { font-family:var(--mono); font-size:15px; }
+.card--wide { grid-column:1/-1; }
+
+/* About: definition list */
+.about { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+.about .card { background:var(--sc); }
+.about dt { font:500 12px/16px var(--font); letter-spacing:.5px; color:var(--primary); }
+.about dd { margin:0; font:400 16px/24px var(--font); }
+
+/* ---------- Quotes ---------- */
+.search { position:relative; margin-bottom:16px; }
+.search input { width:100%; height:56px; padding:0 16px 0 52px; border:0; border-radius:var(--r-full); background:var(--sc-high); color:var(--on-surface); font:400 16px/24px var(--font); letter-spacing:.5px; }
+.search input::placeholder { color:var(--on-surface-variant); }
+.search svg { position:absolute; left:16px; top:16px; color:var(--on-surface-variant); }
+.quotes-meta { margin-bottom:16px; font:400 14px/20px var(--font); color:var(--on-surface-variant); }
+.quotes { columns:2 300px; column-gap:12px; }
+.quote { position:relative; break-inside:avoid; margin-bottom:12px; padding:20px 52px 20px 20px; border-radius:var(--r-lg); background:var(--sc-low); }
+.quote::before { content:"\201C"; position:absolute; top:4px; left:14px; font:700 44px/1 Georgia,serif; color:var(--tertiary); opacity:.35; }
+.quote p { position:relative; padding-top:14px; font:400 16px/26px var(--font); }
+.quote .copy { position:absolute; top:4px; right:4px; width:40px; height:40px; }
+.quote .copy svg { width:18px; height:18px; }
+.quote[hidden] { display:none; }
+.empty { padding:32px 0; text-align:center; color:var(--on-surface-variant); }
+.more { display:flex; justify-content:center; margin-top:8px; }
+
+/* ---------- Footer & snackbar ---------- */
+footer { margin-top:80px; padding:32px 16px calc(32px + env(safe-area-inset-bottom,0)); text-align:center; font:400 12px/16px var(--font); letter-spacing:.4px; color:var(--on-surface-variant); border-top:1px solid var(--outline-variant); }
+.snackbar { position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0)); z-index:50; transform:translate(-50%,24px); opacity:0; pointer-events:none; padding:14px 16px; min-width:200px; border-radius:var(--r-sm); background:var(--inverse-surface); color:var(--inverse-on-surface); font:400 14px/20px var(--font); letter-spacing:.25px; transition:transform .25s var(--ease),opacity .25s var(--ease); }
+.snackbar.show { transform:translate(-50%,0); opacity:1; }
+
+@media (max-width:600px) {
+  .chars { grid-template-columns:repeat(3,1fr); gap:8px; }
+  .chars--four { grid-template-columns:repeat(2,1fr); }
+  .hero { padding:32px 20px; border-radius:var(--r-lg); }
+  .hero__title .typed { position:static; }
+  .hero__title .ghost { display:none; }
+  section { padding-top:48px; }
+  .quote p { font-size:15px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  *,*::before { animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 13h2a1 1 0 1 0 0-2H2a1 1 0 1 0 0 2zm18 0h2a1 1 0 1 0 0-2h-2a1 1 0 1 0 0 2zM11 2v2a1 1 0 1 0 2 0V2a1 1 0 1 0-2 0zm0 18v2a1 1 0 1 0 2 0v-2a1 1 0 1 0-2 0zM5.99 4.58a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41L5.99 4.58zm12.37 12.37a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41l-1.06-1.06zm1.06-10.96a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06zM7.05 18.36a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06z"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></symbol>
+    <symbol id="i-open" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- Top app bar + tabs -->
+<header class="appbar" id="appbar">
+  <div class="wrap">
+    <div class="appbar__row">
+      <a class="appbar__title" href="#top">D.<span>Paradox</span></a>
+      <button class="icon-btn" id="themeBtn" data-theme-icon aria-label="Toggle light/dark theme">
+        <svg class="i sun"><use href="#i-sun"/></svg><svg class="i moon"><use href="#i-moon"/></svg>
+      </button>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Sections">
+      <a class="tab" href="#about">About</a>
+      <a class="tab" href="#skills">Skills</a>
+      <a class="tab" href="#interests">Interests</a>
+      <a class="tab" href="#favorites">Favorites</a>
+      <a class="tab" href="#projects">Projects</a>
+      <a class="tab" href="#quotes">Quotes</a>
+      <a class="tab" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <!-- Landing -->
+  <div class="hero" id="top">
+    <img class="avatar" src="https://i.ibb.co/Y7BvS4q7/3ce87851-1652-4adb-a9d1-258ecd4224ec.jpg" alt="D.Paradox profile picture" width="96" height="96" referrerpolicy="no-referrer">
+    <p class="eyebrow">Android developer &middot; Student &middot; Writer</p>
+    <h1 class="hero__title" data-text="I carry the rage of Titans and the despair of men — D.Paradox.">
+      <span class="ghost">I carry the rage of Titans and the despair of men — D.Paradox.</span>
+      <span class="typed" aria-hidden="true"></span>
+    </h1>
+    <div class="hero__actions">
+      <a class="btn btn--filled" href="#projects">View projects</a>
+      <a class="btn btn--outlined" href="#contact">Get in touch</a>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section id="about">
+    <div class="sec-head"><p class="eyebrow">01</p><h2>About Me</h2></div>
+    <dl class="about" style="margin:0">
+      <div class="card"><dt>Name</dt><dd>Eren (alias D.Paradox)</dd></div>
+      <div class="card"><dt>Religion</dt><dd>Islam</dd></div>
+      <div class="card"><dt>Homeland</dt><dd>Eldia</dd></div>
+      <div class="card"><dt>Occupation</dt><dd>Student, Hobby Android Developer (Jetpack Compose, Kotlin), Part-time SMM</dd></div>
+      <div class="card"><dt>Languages</dt><dd class="chips" style="margin-top:4px"><span class="chip chip--tonal">Bangla</span><span class="chip chip--tonal">English</span><span class="chip chip--tonal">Mandarin (basic)</span></dd></div>
+      <div class="card"><dt>Style</dt><dd class="chips" style="margin-top:4px"><span class="chip chip--tonal">Minimalist</span><span class="chip chip--tonal">Black &amp; white</span><span class="chip chip--tonal">Bold text</span><span class="chip chip--tonal">Typing animations</span></dd></div>
+    </dl>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="sec-head"><p class="eyebrow">02</p><h2>Skills</h2></div>
+    <ul class="grid">
+      <li class="card"><h3 class="card__title">Android Development</h3><p class="card__text">Kotlin, Jetpack Compose</p></li>
+      <li class="card"><h3 class="card__title">APK Modding</h3><p class="card__text">Dex modding, license bypass</p></li>
+      <li class="card"><h3 class="card__title">GitHub Usage</h3><p class="card__text">Releases, Assets, Repo Info</p></li>
+      <li class="card"><h3 class="card__title">Bot Development</h3><p class="card__text">Telegram, API Integration</p></li>
+      <li class="card"><h3 class="card__title">Open-source Packaging</h3><p class="card__text">F-Droid Metadata</p></li>
+    </ul>
+  </section>
+
+  <!-- Interests -->
+  <section id="interests">
+    <div class="sec-head"><p class="eyebrow">03</p><h2>Interests</h2></div>
+    <ul class="grid">
+      <li class="card card--wide">
+        <h3 class="card__title">Anime aesthetics</h3>
+        <!-- Poster slot: swap <div class="ph">...</div> for <img src="POSTER_URL" alt="TITLE"> -->
+        <ul class="chars chars--four">
+          <li><a class="char" href="https://www.imdb.com/title/tt2560140/" target="_blank" rel="noopener noreferrer"><img src="https://i.ibb.co/tM3vHfFK/75ec2ec7-68b0-4437-80a2-8a7ddacbc1b6.jpg" alt="Attack on Titan" loading="lazy" referrerpolicy="no-referrer"><span>IMDb &#8599;</span></a></li>
+          <li><a class="char" href="https://www.imdb.com/title/tt7078180/" target="_blank" rel="noopener noreferrer"><img src="https://i.ibb.co/spC39xgx/f0447a87-5664-4e73-a2aa-32e870cd1d40.jpg" alt="Violet Evergarden" loading="lazy" referrerpolicy="no-referrer"><span>IMDb &#8599;</span></a></li>
+          <li><a class="char" href="https://www.imdb.com/title/tt7865090/" target="_blank" rel="noopener noreferrer"><img src="https://i.ibb.co/67sN51RV/76665127-b6e8-4251-99dd-10e3b7649729.jpg" alt="Darling in the Franxx" loading="lazy" referrerpolicy="no-referrer"><span>IMDb &#8599;</span></a></li>
+          <li><a class="char" href="https://www.imdb.com/title/tt13293588/" target="_blank" rel="noopener noreferrer"><img src="https://i.ibb.co/ch49tNMX/546598c7-6808-4d34-b5b0-d0c86eede48b.jpg" alt="Mushoku Tensei" loading="lazy" referrerpolicy="no-referrer"><span>IMDb &#8599;</span></a></li>
+        </ul>
+      </li>
+      <li class="card card--wide">
+        <h3 class="card__title">Favorite characters</h3>
+        <ul class="chars">
+          <li class="char"><img src="https://i.ibb.co/1J9SrgWs/cc803296-17c4-4add-a600-4b1c747c3206.jpg" alt="Hange Zoë" loading="lazy" referrerpolicy="no-referrer"><span>Hange Zoë</span></li>
+          <li class="char"><img src="https://i.ibb.co/Qv01y6Nk/ff3c7792-b7f5-40c7-9745-cca74633baf4.jpg" alt="Mikasa Ackerman" loading="lazy" referrerpolicy="no-referrer"><span>Mikasa Ackerman</span></li>
+          <li class="char"><img src="https://i.ibb.co/j927DKTK/125e9ec0-0e83-4530-9d83-a4681e22834d.jpg" alt="Violet Evergarden" loading="lazy" referrerpolicy="no-referrer"><span>Violet Evergarden</span></li>
+        </ul>
+      </li>
+      <li class="card"><h3 class="card__title">Photo Editing</h3><p class="card__text">Aesthetic transformations</p></li>
+      <li class="card"><h3 class="card__title">Crypto Trading &amp; Wallet Usage</h3></li>
+      <li><a class="card card--link" style="height:100%" href="https://music.youtube.com/playlist?list=PLEHtCIdEGhBPbINvDarAcWZnPtEkXXf9X" target="_blank" rel="noopener noreferrer"><div><span class="card__label">Playlist</span><span class="card__title" style="font-family:var(--font)">My Music Playlist</span></div><svg class="i"><use href="#i-open"/></svg></a></li>
+    </ul>
+  </section>
+
+  <!-- Favorites -->
+  <section id="favorites">
+    <div class="sec-head"><p class="eyebrow">04</p><h2>Favorites</h2></div>
+    <ul class="grid">
+      <li class="card"><span class="card__label">Anime</span><p class="card__title">Attack on Titan, Violet Evergarden, Darling in the Franxx</p></li>
+      <li class="card card--wide"><span class="card__label">Songs</span>
+        <ul class="songs">
+          <li><a class="song" href="https://music.youtube.com/watch?v=hLb5UPeROkc" target="_blank" rel="noopener noreferrer"><img src="https://i.ytimg.com/vi/hLb5UPeROkc/mqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer"><div><span class="card__title">Icche Ghuri</span><span class="card__text">YouTube Music</span></div><svg class="i"><use href="#i-music"/></svg></a></li>
+          <li><a class="song" href="https://music.youtube.com/watch?v=M8j6h5hgRtM" target="_blank" rel="noopener noreferrer"><img src="https://i.ytimg.com/vi/M8j6h5hgRtM/mqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer"><div><span class="card__title">Biday</span><span class="card__text">YouTube Music</span></div><svg class="i"><use href="#i-music"/></svg></a></li>
+          <li><a class="song" href="https://music.youtube.com/watch?v=9B0yX0UIN9M" target="_blank" rel="noopener noreferrer"><img src="https://i.ytimg.com/vi/9B0yX0UIN9M/mqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer"><div><span class="card__title">I Really Want to Stay at Your House</span><span class="card__text">YouTube Music</span></div><svg class="i"><use href="#i-music"/></svg></a></li>
+          <li><a class="song" href="https://music.youtube.com/watch?v=E938KHTMCac" target="_blank" rel="noopener noreferrer"><img src="https://i.ytimg.com/vi/E938KHTMCac/mqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer"><div><span class="card__title">Levan Polkka</span><span class="card__text">YouTube Music</span></div><svg class="i"><use href="#i-music"/></svg></a></li>
+        </ul>
+      </li>
+      <li class="card"><span class="card__label">Movie</span><p class="card__title">To Me, the One Who Loved You</p></li>
+    </ul>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="sec-head"><p class="eyebrow">05</p><h2>Projects</h2></div>
+    <ul class="grid">
+      <li><a class="card card--link" href="https://t.me/Paradoxical_pages_bot" target="_blank" rel="noopener noreferrer"><div><span class="card__label">Telegram Bot</span><span class="card__title">@Paradoxical_pages_bot</span></div><svg class="i"><use href="#i-send"/></svg></a></li>
+      <li><a class="card card--link" href="https://t.me/Paradoxical_mail_bot" target="_blank" rel="noopener noreferrer"><div><span class="card__label">Telegram Bot</span><span class="card__title">@Paradoxical_mail_bot</span></div><svg class="i"><use href="#i-send"/></svg></a></li>
+      <li><a class="card card--link" href="https://t.me/Paradoxical_support_x_bot" target="_blank" rel="noopener noreferrer"><div><span class="card__label">Telegram Bot</span><span class="card__title">@Paradoxical_support_x_bot</span></div><svg class="i"><use href="#i-send"/></svg></a></li>
+      <li><a class="card card--link" href="https://t.me/Paradoxical_links_x_bot" target="_blank" rel="noopener noreferrer"><div><span class="card__label">Telegram Bot</span><span class="card__title">@Paradoxical_links_x_bot</span></div><svg class="i"><use href="#i-send"/></svg></a></li>
+      <li class="card--wide"><a class="card card--link" href="https://github.com/paradox1905006" target="_blank" rel="noopener noreferrer" style="background:var(--primary-container);color:var(--on-primary-container)"><div><span class="card__label" style="color:inherit">GitHub</span><span class="card__title">@paradox1905006</span></div><svg class="i" style="color:inherit"><use href="#i-code"/></svg></a></li>
+    </ul>
+  </section>
+
+  <!-- Quotes -->
+  <section id="quotes">
+    <div class="sec-head"><p class="eyebrow">06</p><h2>Quotes Archive</h2></div>
+    <label class="search"><span class="sr-only">Search quotes</span>
+      <svg class="i"><use href="#i-search"/></svg>
+      <input id="q" type="search" placeholder="Search quotes" autocomplete="off">
+    </label>
+    <p class="quotes-meta" id="meta" aria-live="polite"></p>
+    <ul class="quotes" id="list">
+        <li class="quote"><p>I burn in water, yet flames remind me I was never alive.</p></li>
+        <li class="quote"><p>Life is yours, Death is mine. Peace is yours, stress is mine. Happiness is yours, sorrow is mine. Everything is yours — but you are mine.</p></li>
+        <li class="quote"><p>I was the storm you feared, but also the shelter you never entered.</p></li>
+        <li class="quote"><p>Every goodbye is a mirror — it shows me the face I never wanted to see.</p></li>
+        <li class="quote"><p>Freedom feels like chains, love feels like war — I am the paradox.</p></li>
+        <li class="quote"><p>Humanity fights for freedom, yet every victory is another cage. That's the paradox of survival.</p></li>
+        <li class="quote"><p>The louder the scream, the deeper the silence. I am both the Titan's roar and the void's whisper.</p></li>
+        <li class="quote"><p>My life is a battlefield of contradictions.<br>Freedom tastes like chains, love feels like war.<br>Every victory leaves me emptier, every loss makes me stronger.<br><br>I am the Titan's rage and the human's despair.<br>I am the silence after the scream, the ashes after the fire.<br>I am chaos wrapped in flesh, a paradox carved in pain.<br><br>Walls will fall, hearts will break, hope will burn —<br>but I will rise, again and again,<br>because even in hell, I am eternal.</p></li>
+        <li class="quote"><p>I carry the rage of Titans and the despair of men.</p></li>
+        <li class="quote"><p>I am the silence after the scream, the void after the fire.</p></li>
+        <li class="quote"><p>Born in chaos, living in ruins, eternal in ashes.</p></li>
+        <li class="quote"><p>Hope is not always strong,<br>And right is not always wrong.<br>The ones who guide you may not always stay,<br>And forever is not always the way.<br>Sometimes the hardest truth of love is realizing I was only a pause in your journey.</p></li>
+        <li class="quote"><p>Rain is not always pure,<br>And pain is not always sure.<br>The ones who stay may not always care,<br>And tomorrow is not always fair.<br>Sometimes the quietest ache of love is knowing I was never your choice.</p></li>
+        <li class="quote"><p>We were never forever, just echoes pretending to be eternity.</p></li>
+        <li class="quote"><p>You didn't leave with words, you left with silence sharp enough to bleed.</p></li>
+        <li class="quote"><p>We were a sentence cut short, a poem missing its last line.</p></li>
+        <li class="quote"><p>You kept my heart like a secret, but wore my pain like a crown.</p></li>
+        <li class="quote"><p>We don't experience the same rain.<br>Some have umbrellas, some have roofs,<br>And some only have themselves.<br>That's why we should be kinder, slower to judge and quicker to understand.<br>You'll never know how heavy someone's rain is until you stood where they are.</p></li>
+        <li class="quote"><p>The right person the wrong time.<br>The right script the wrong line.<br>The right poem the wrong rhyme.<br>And a piece of you that was never mine.</p></li>
+        <li class="quote"><p>Not quite strangers, not quite lovers,<br>just two souls quietly choosing each other.<br>Standing close, a space without a name.</p></li>
+        <li class="quote"><p>You didn't lose me when I walked away.<br>You lost me the moment I stopped fighting for us.<br>I didn't leave because love ran out.<br>I left because I finally saw—<br>you never cared if I stayed.</p></li>
+        <li class="quote"><p>If love is a wound, then I'm the scar you'll never touch again.</p></li>
+        <li class="quote"><p>If I were a star, I'd collapse into your gaze, shining only long enough to remind you I existed.</p></li>
+        <li class="quote"><p>If I were rain, I'd fall just once — only to kiss your skin and vanish into your silence.</p></li>
+        <li class="quote"><p>I wish I was one of your tears so I could be born in your eyes, run down your cheek, and die on your lips.</p></li>
+        <li class="quote"><p>You were the fire I warmed my hands on, but flames don't belong to those who hold them. Now I carry only ashes.</p></li>
+        <li class="quote"><p>You shine for the world, but never for me.</p></li>
+        <li class="quote"><p>I was a star burning for you, but you never raised your eyes.</p></li>
+        <li class="quote"><p>You lit the world, but left me in the dark.</p></li>
+        <li class="quote"><p>I drowned in you, while you learned to swim away.</p></li>
+        <li class="quote"><p>You were my forever, I was your passing season.</p></li>
+        <li class="quote"><p>I kill my past, yet every grave I dig becomes the seed of tomorrow.</p></li>
+        <li class="quote"><p>I chase eternity through fleeting seconds, yet each heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I traded dawn for dusk, and called it growing up.</p></li>
+        <li class="quote"><p>The dark was never mine to keep, only the star stayed.</p></li>
+        <li class="quote"><p>I chase the dark through the star, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I chase chaos through peace, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>You called it the storm. I called it the calm. We were both right.</p></li>
+        <li class="quote"><p>A moment was never mine to keep, only forever stayed.</p></li>
+        <li class="quote"><p>Somewhere between the sun and the ash, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Blood was never mine to keep, only ink stayed.</p></li>
+        <li class="quote"><p>Every death I bury becomes the seed of tomorrow's life.</p></li>
+        <li class="quote"><p>I gave the world the cage, and kept the crown for myself.</p></li>
+        <li class="quote"><p>I was your silence, now I'm just thunder.</p></li>
+        <li class="quote"><p>You gave me the ruins, I gave you the roots — that's how we broke.</p></li>
+        <li class="quote"><p>They see the sun; I only ever felt the ash.</p></li>
+        <li class="quote"><p>Between war and love, I built a home no one visits.</p></li>
+        <li class="quote"><p>Somewhere between peace and chaos, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I wasn't built for the tide; I was built to survive the shore.</p></li>
+        <li class="quote"><p>I searched for peace and found chaos wearing its face.</p></li>
+        <li class="quote"><p>I traded thunder for silence, and called it growing up.</p></li>
+        <li class="quote"><p>Every the scream ends the same way — as silence I have to carry.</p></li>
+        <li class="quote"><p>Between the shadow and the mirror, I built a home no one visits.</p></li>
+        <li class="quote"><p>They see chains; I only ever felt freedom.</p></li>
+        <li class="quote"><p>Every the wound ends the same way — as the scar I have to carry.</p></li>
+        <li class="quote"><p>I chase despair through hope, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>You spoke of silence; I already knew thunder.</p></li>
+        <li class="quote"><p>Between chaos and peace, I built a home no one visits.</p></li>
+        <li class="quote"><p>Every hope ends the same way — as despair I have to carry.</p></li>
+        <li class="quote"><p>I wasn't built for the scar; I was built to survive the wound.</p></li>
+        <li class="quote"><p>You gave me the cage, I gave you the crown — that's how we broke.</p></li>
+        <li class="quote"><p>You lit my ink, then left me in blood.</p></li>
+        <li class="quote"><p>You called it the calm. I called it the storm. We were both right.</p></li>
+        <li class="quote"><p>Somewhere between the ruins and the roots, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I was your the lie, now I'm just the promise.</p></li>
+        <li class="quote"><p>I was your the flame, now I'm just frost.</p></li>
+        <li class="quote"><p>The scar and the wound — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Every the nightmare I bury becomes the seed of tomorrow's the dream.</p></li>
+        <li class="quote"><p>I was your ink, now I'm just blood.</p></li>
+        <li class="quote"><p>Ash was never mine to keep, only fire stayed.</p></li>
+        <li class="quote"><p>What looks like the shadow from afar is only the mirror up close.</p></li>
+        <li class="quote"><p>Every war I bury becomes the seed of tomorrow's love.</p></li>
+        <li class="quote"><p>Sorrow is mine, joy is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I am the promise after the lie, the calm before the ruin.</p></li>
+        <li class="quote"><p>The void feels like the vow — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I am the flood after the drought, the calm before the ruin.</p></li>
+        <li class="quote"><p>The wound and the scar — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I chase the void through the echo, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I am memory you feared, and oblivion you never entered.</p></li>
+        <li class="quote"><p>Somewhere between the desert and the ocean, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I burned in forever, drowned in a moment, and called it living.</p></li>
+        <li class="quote"><p>Thunder feels like silence — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I wasn't built for drought; I was built to survive rain.</p></li>
+        <li class="quote"><p>You gave me dawn, I gave you dusk — that's how we broke.</p></li>
+        <li class="quote"><p>You gave me stone, I gave you the heart — that's how we broke.</p></li>
+        <li class="quote"><p>Every a moment I bury becomes the seed of tomorrow's forever.</p></li>
+        <li class="quote"><p>I burned in the lie, drowned in the promise, and called it living.</p></li>
+        <li class="quote"><p>Between the dark and the star, I built a home no one visits.</p></li>
+        <li class="quote"><p>I gave the world light, and kept dark for myself.</p></li>
+        <li class="quote"><p>You called it the rose. I called it the thorn. We were both right.</p></li>
+        <li class="quote"><p>I wasn't built for despair; I was built to survive hope.</p></li>
+        <li class="quote"><p>You called it peace. I called it chaos. We were both right.</p></li>
+        <li class="quote"><p>The star is mine, the dark is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Somewhere between ink and blood, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You called it the whisper. I called it the roar. We were both right.</p></li>
+        <li class="quote"><p>Every the scar ends the same way — as the wound I have to carry.</p></li>
+        <li class="quote"><p>I was your the dream, now I'm just the nightmare.</p></li>
+        <li class="quote"><p>The roots is mine, the ruins is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Light was never mine to keep, only dark stayed.</p></li>
+        <li class="quote"><p>I am chaos you feared, and peace you never entered.</p></li>
+        <li class="quote"><p>You gave me life, I gave you death — that's how we broke.</p></li>
+        <li class="quote"><p>Death feels like life — that's the paradox of being human.</p></li>
+        <li class="quote"><p>The crown is mine, the cage is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Every hope I bury becomes the seed of tomorrow's despair.</p></li>
+        <li class="quote"><p>I wasn't built for the shadow; I was built to survive the mirror.</p></li>
+        <li class="quote"><p>I was born from love, but I will die as war.</p></li>
+        <li class="quote"><p>Between the dream and the nightmare, I built a home no one visits.</p></li>
+        <li class="quote"><p>Frost was never mine to keep, only the flame stayed.</p></li>
+        <li class="quote"><p>I gave the world dawn, and kept dusk for myself.</p></li>
+        <li class="quote"><p>I was born from the wildfire, but I will die as the winter.</p></li>
+        <li class="quote"><p>I burned in peace, drowned in chaos, and called it living.</p></li>
+        <li class="quote"><p>Somewhere between the calm and the storm, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Silence was never mine to keep, only thunder stayed.</p></li>
+        <li class="quote"><p>I gave the world the drought, and kept the flood for myself.</p></li>
+        <li class="quote"><p>Chains and wings — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>What looks like the flame from afar is only frost up close.</p></li>
+        <li class="quote"><p>Somewhere between the echo and the void, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I am the crown after the cage, the calm before the ruin.</p></li>
+        <li class="quote"><p>Between the shore and the tide, I built a home no one visits.</p></li>
+        <li class="quote"><p>What looks like the thorn from afar is only the rose up close.</p></li>
+        <li class="quote"><p>You lit my the scar, then left me in the wound.</p></li>
+        <li class="quote"><p>I searched for war and found love wearing its face.</p></li>
+        <li class="quote"><p>I gave the world the dark, and kept the star for myself.</p></li>
+        <li class="quote"><p>You lit my the calm, then left me in the storm.</p></li>
+        <li class="quote"><p>I traded the flood for the drought, and called it growing up.</p></li>
+        <li class="quote"><p>I searched for freedom and found chains wearing its face.</p></li>
+        <li class="quote"><p>Every the vow I bury becomes the seed of tomorrow's the void.</p></li>
+        <li class="quote"><p>Every stone ends the same way — as the heart I have to carry.</p></li>
+        <li class="quote"><p>You spoke of the echo; I already knew the void.</p></li>
+        <li class="quote"><p>Somewhere between the roots and the ruins, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Joy and sorrow — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I gave the world freedom, and kept chains for myself.</p></li>
+        <li class="quote"><p>Life is mine, death is yours — I am the paradox.</p></li>
+        <li class="quote"><p>The wildfire is mine, the winter is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I burned in the scream, drowned in silence, and called it living.</p></li>
+        <li class="quote"><p>They see the ruins; I only ever felt the roots.</p></li>
+        <li class="quote"><p>Somewhere between memory and oblivion, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Somewhere between the drought and the flood, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Joy is mine, sorrow is yours — I am the paradox.</p></li>
+        <li class="quote"><p>You called it the sun. I called it the ash. We were both right.</p></li>
+        <li class="quote"><p>You lit my a moment, then left me in forever.</p></li>
+        <li class="quote"><p>You called it the ash. I called it the sun. We were both right.</p></li>
+        <li class="quote"><p>You called it stone. I called it the heart. We were both right.</p></li>
+        <li class="quote"><p>If the tide is a wound, then I am the shore you'll never touch again.</p></li>
+        <li class="quote"><p>Somewhere between chains and freedom, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Chaos and peace — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>They see the heart; I only ever felt stone.</p></li>
+        <li class="quote"><p>Every the shadow ends the same way — as the mirror I have to carry.</p></li>
+        <li class="quote"><p>I was your ash, now I'm just fire.</p></li>
+        <li class="quote"><p>Between the frost and the ember, I built a home no one visits.</p></li>
+        <li class="quote"><p>I searched for silence and found thunder wearing its face.</p></li>
+        <li class="quote"><p>If the feather is a wound, then I am iron you'll never touch again.</p></li>
+        <li class="quote"><p>The roar feels like the whisper — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You lit my the sun, then left me in the ash.</p></li>
+        <li class="quote"><p>You spoke of the dark; I already knew the star.</p></li>
+        <li class="quote"><p>What looks like peace from afar is only chaos up close.</p></li>
+        <li class="quote"><p>Sorrow was never mine to keep, only joy stayed.</p></li>
+        <li class="quote"><p>You lit my the promise, then left me in the lie.</p></li>
+        <li class="quote"><p>I burned in the desert, drowned in the ocean, and called it living.</p></li>
+        <li class="quote"><p>I burned in joy, drowned in sorrow, and called it living.</p></li>
+        <li class="quote"><p>I traded frost for the flame, and called it growing up.</p></li>
+        <li class="quote"><p>I was born from frost, but I will die as the flame.</p></li>
+        <li class="quote"><p>I was born from ink, but I will die as blood.</p></li>
+        <li class="quote"><p>What looks like the cage from afar is only the crown up close.</p></li>
+        <li class="quote"><p>Silence and the scream — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Blood and ink — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I gave the world a moment, and kept forever for myself.</p></li>
+        <li class="quote"><p>I gave the world the dream, and kept the nightmare for myself.</p></li>
+        <li class="quote"><p>I am the cage after the crown, the calm before the ruin.</p></li>
+        <li class="quote"><p>If the roots is a wound, then I am the ruins you'll never touch again.</p></li>
+        <li class="quote"><p>You gave me light, I gave you dark — that's how we broke.</p></li>
+        <li class="quote"><p>Every silence I bury becomes the seed of tomorrow's thunder.</p></li>
+        <li class="quote"><p>The ash was never mine to keep, only the sun stayed.</p></li>
+        <li class="quote"><p>Hope and despair — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Somewhere between the scream and silence, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Every dusk ends the same way — as dawn I have to carry.</p></li>
+        <li class="quote"><p>Somewhere between the storm and the calm, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Frost is mine, the flame is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I traded the void for the echo, and called it growing up.</p></li>
+        <li class="quote"><p>I wasn't built for the heart; I was built to survive stone.</p></li>
+        <li class="quote"><p>If wings is a wound, then I am chains you'll never touch again.</p></li>
+        <li class="quote"><p>The mirror feels like the shadow — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I burned in the wound, drowned in the scar, and called it living.</p></li>
+        <li class="quote"><p>Every the winter ends the same way — as the wildfire I have to carry.</p></li>
+        <li class="quote"><p>I was born from the shore, but I will die as the tide.</p></li>
+        <li class="quote"><p>You lit my the echo, then left me in the void.</p></li>
+        <li class="quote"><p>I am light you feared, and dark you never entered.</p></li>
+        <li class="quote"><p>Every the cage ends the same way — as the crown I have to carry.</p></li>
+        <li class="quote"><p>What looks like love from afar is only war up close.</p></li>
+        <li class="quote"><p>You spoke of blood; I already knew ink.</p></li>
+        <li class="quote"><p>I was born from the flame, but I will die as frost.</p></li>
+        <li class="quote"><p>You lit my memory, then left me in oblivion.</p></li>
+        <li class="quote"><p>What looks like the frost from afar is only the ember up close.</p></li>
+        <li class="quote"><p>I am the star you feared, and the dark you never entered.</p></li>
+        <li class="quote"><p>I was your the void, now I'm just the vow.</p></li>
+        <li class="quote"><p>Every chains I bury becomes the seed of tomorrow's freedom.</p></li>
+        <li class="quote"><p>They see dawn; I only ever felt dusk.</p></li>
+        <li class="quote"><p>You lit my the roots, then left me in the ruins.</p></li>
+        <li class="quote"><p>Forever feels like a moment — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I burned in silence, drowned in thunder, and called it living.</p></li>
+        <li class="quote"><p>You spoke of the ocean; I already knew the desert.</p></li>
+        <li class="quote"><p>I traded the void for the vow, and called it growing up.</p></li>
+        <li class="quote"><p>Every the frost ends the same way — as the ember I have to carry.</p></li>
+        <li class="quote"><p>Every the echo ends the same way — as the void I have to carry.</p></li>
+        <li class="quote"><p>I gave the world the thorn, and kept the rose for myself.</p></li>
+        <li class="quote"><p>They see despair; I only ever felt hope.</p></li>
+        <li class="quote"><p>I am the tide you feared, and the shore you never entered.</p></li>
+        <li class="quote"><p>The ruins feels like the roots — that's the paradox of being human.</p></li>
+        <li class="quote"><p>They see memory; I only ever felt oblivion.</p></li>
+        <li class="quote"><p>I searched for drought and found rain wearing its face.</p></li>
+        <li class="quote"><p>I was born from the calm, but I will die as the storm.</p></li>
+        <li class="quote"><p>The star feels like the dark — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I burned in the star, drowned in the dark, and called it living.</p></li>
+        <li class="quote"><p>Iron and the feather — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Between the rose and the thorn, I built a home no one visits.</p></li>
+        <li class="quote"><p>I was your the star, now I'm just the dark.</p></li>
+        <li class="quote"><p>I am hope you feared, and despair you never entered.</p></li>
+        <li class="quote"><p>I was your frost, now I'm just the flame.</p></li>
+        <li class="quote"><p>They see the roar; I only ever felt the whisper.</p></li>
+        <li class="quote"><p>War was never mine to keep, only love stayed.</p></li>
+        <li class="quote"><p>You spoke of hope; I already knew despair.</p></li>
+        <li class="quote"><p>Every the shore ends the same way — as the tide I have to carry.</p></li>
+        <li class="quote"><p>You called it rain. I called it drought. We were both right.</p></li>
+        <li class="quote"><p>You gave me the rose, I gave you the thorn — that's how we broke.</p></li>
+        <li class="quote"><p>Stone feels like the heart — that's the paradox of being human.</p></li>
+        <li class="quote"><p>They see the roots; I only ever felt the ruins.</p></li>
+        <li class="quote"><p>If freedom is a wound, then I am chains you'll never touch again.</p></li>
+        <li class="quote"><p>You gave me the roar, I gave you the whisper — that's how we broke.</p></li>
+        <li class="quote"><p>What looks like war from afar is only love up close.</p></li>
+        <li class="quote"><p>I wasn't built for the flood; I was built to survive the drought.</p></li>
+        <li class="quote"><p>The storm feels like the calm — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You lit my the ruins, then left me in the roots.</p></li>
+        <li class="quote"><p>I am the dark after the star, the calm before the ruin.</p></li>
+        <li class="quote"><p>They see chains; I only ever felt wings.</p></li>
+        <li class="quote"><p>I am the ash after the sun, the calm before the ruin.</p></li>
+        <li class="quote"><p>They see the feather; I only ever felt iron.</p></li>
+        <li class="quote"><p>Somewhere between silence and the scream, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>What looks like the scar from afar is only the wound up close.</p></li>
+        <li class="quote"><p>I am the cage you feared, and the crown you never entered.</p></li>
+        <li class="quote"><p>You called it life. I called it death. We were both right.</p></li>
+        <li class="quote"><p>They see peace; I only ever felt chaos.</p></li>
+        <li class="quote"><p>They see the flame; I only ever felt frost.</p></li>
+        <li class="quote"><p>I searched for the crown and found the cage wearing its face.</p></li>
+        <li class="quote"><p>Chaos feels like peace — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I am the storm after the calm, the calm before the ruin.</p></li>
+        <li class="quote"><p>I am dawn after dusk, the calm before the ruin.</p></li>
+        <li class="quote"><p>Every light ends the same way — as dark I have to carry.</p></li>
+        <li class="quote"><p>You lit my rain, then left me in drought.</p></li>
+        <li class="quote"><p>You gave me the flame, I gave you frost — that's how we broke.</p></li>
+        <li class="quote"><p>The calm was never mine to keep, only the storm stayed.</p></li>
+        <li class="quote"><p>Between the flame and frost, I built a home no one visits.</p></li>
+        <li class="quote"><p>I chase the dream through the nightmare, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>Between the ocean and the desert, I built a home no one visits.</p></li>
+        <li class="quote"><p>You gave me peace, I gave you chaos — that's how we broke.</p></li>
+        <li class="quote"><p>You gave me thunder, I gave you silence — that's how we broke.</p></li>
+        <li class="quote"><p>I chase the flame through frost, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>Somewhere between the void and the echo, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I gave the world fire, and kept ash for myself.</p></li>
+        <li class="quote"><p>What looks like the roar from afar is only the whisper up close.</p></li>
+        <li class="quote"><p>I was your dusk, now I'm just dawn.</p></li>
+        <li class="quote"><p>If blood is a wound, then I am ink you'll never touch again.</p></li>
+        <li class="quote"><p>I wasn't built for sorrow; I was built to survive joy.</p></li>
+        <li class="quote"><p>You gave me the void, I gave you the vow — that's how we broke.</p></li>
+        <li class="quote"><p>Every the dream ends the same way — as the nightmare I have to carry.</p></li>
+        <li class="quote"><p>The flood is mine, the drought is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I searched for thunder and found silence wearing its face.</p></li>
+        <li class="quote"><p>I was born from hope, but I will die as despair.</p></li>
+        <li class="quote"><p>Between the roar and the whisper, I built a home no one visits.</p></li>
+        <li class="quote"><p>You gave me silence, I gave you thunder — that's how we broke.</p></li>
+        <li class="quote"><p>You gave me the flood, I gave you the drought — that's how we broke.</p></li>
+        <li class="quote"><p>Stone and the heart — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You spoke of the feather; I already knew iron.</p></li>
+        <li class="quote"><p>I searched for stone and found the heart wearing its face.</p></li>
+        <li class="quote"><p>I am the storm you feared, and the calm you never entered.</p></li>
+        <li class="quote"><p>I am war you feared, and love you never entered.</p></li>
+        <li class="quote"><p>You spoke of the shore; I already knew the tide.</p></li>
+        <li class="quote"><p>The heart and stone — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I traded the lie for the promise, and called it growing up.</p></li>
+        <li class="quote"><p>I traded the thorn for the rose, and called it growing up.</p></li>
+        <li class="quote"><p>What looks like the dream from afar is only the nightmare up close.</p></li>
+        <li class="quote"><p>I burned in the void, drowned in the vow, and called it living.</p></li>
+        <li class="quote"><p>The whisper and the roar — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>They see the scream; I only ever felt silence.</p></li>
+        <li class="quote"><p>The tide and the shore — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I was born from dusk, but I will die as dawn.</p></li>
+        <li class="quote"><p>If the star is a wound, then I am the dark you'll never touch again.</p></li>
+        <li class="quote"><p>I wasn't built for a moment; I was built to survive forever.</p></li>
+        <li class="quote"><p>I am wings after chains, the calm before the ruin.</p></li>
+        <li class="quote"><p>I gave the world the roar, and kept the whisper for myself.</p></li>
+        <li class="quote"><p>I am the ocean you feared, and the desert you never entered.</p></li>
+        <li class="quote"><p>I gave the world the flame, and kept frost for myself.</p></li>
+        <li class="quote"><p>The scream and silence — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Every peace ends the same way — as chaos I have to carry.</p></li>
+        <li class="quote"><p>The desert feels like the ocean — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You gave me the nightmare, I gave you the dream — that's how we broke.</p></li>
+        <li class="quote"><p>You called it the heart. I called it stone. We were both right.</p></li>
+        <li class="quote"><p>The calm feels like the storm — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I am silence after thunder, the calm before the ruin.</p></li>
+        <li class="quote"><p>You called it ink. I called it blood. We were both right.</p></li>
+        <li class="quote"><p>I traded peace for chaos, and called it growing up.</p></li>
+        <li class="quote"><p>I burned in the calm, drowned in the storm, and called it living.</p></li>
+        <li class="quote"><p>You lit my stone, then left me in the heart.</p></li>
+        <li class="quote"><p>Somewhere between forever and a moment, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I traded the rose for the thorn, and called it growing up.</p></li>
+        <li class="quote"><p>I traded the dream for the nightmare, and called it growing up.</p></li>
+        <li class="quote"><p>I traded sorrow for joy, and called it growing up.</p></li>
+        <li class="quote"><p>I traded the sun for the ash, and called it growing up.</p></li>
+        <li class="quote"><p>I am the shore after the tide, the calm before the ruin.</p></li>
+        <li class="quote"><p>I burned in drought, drowned in rain, and called it living.</p></li>
+        <li class="quote"><p>If hope is a wound, then I am despair you'll never touch again.</p></li>
+        <li class="quote"><p>Somewhere between the frost and the ember, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Every the ruins I bury becomes the seed of tomorrow's the roots.</p></li>
+        <li class="quote"><p>I wasn't built for chaos; I was built to survive peace.</p></li>
+        <li class="quote"><p>The whisper is mine, the roar is yours — I am the paradox.</p></li>
+        <li class="quote"><p>The sun was never mine to keep, only the ash stayed.</p></li>
+        <li class="quote"><p>The crown was never mine to keep, only the cage stayed.</p></li>
+        <li class="quote"><p>I searched for the dark and found the star wearing its face.</p></li>
+        <li class="quote"><p>You called it the dark. I called it the star. We were both right.</p></li>
+        <li class="quote"><p>You gave me fire, I gave you ash — that's how we broke.</p></li>
+        <li class="quote"><p>I was born from fire, but I will die as ash.</p></li>
+        <li class="quote"><p>If peace is a wound, then I am chaos you'll never touch again.</p></li>
+        <li class="quote"><p>If the dark is a wound, then I am the star you'll never touch again.</p></li>
+        <li class="quote"><p>The roar is mine, the whisper is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I gave the world ash, and kept fire for myself.</p></li>
+        <li class="quote"><p>Every wings ends the same way — as chains I have to carry.</p></li>
+        <li class="quote"><p>The storm is mine, the calm is yours — I am the paradox.</p></li>
+        <li class="quote"><p>The sun feels like the ash — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Somewhere between the dark and the star, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You spoke of iron; I already knew the feather.</p></li>
+        <li class="quote"><p>Between the winter and the wildfire, I built a home no one visits.</p></li>
+        <li class="quote"><p>Every the whisper I bury becomes the seed of tomorrow's the roar.</p></li>
+        <li class="quote"><p>You called it the shore. I called it the tide. We were both right.</p></li>
+        <li class="quote"><p>Drought and rain — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I was born from chaos, but I will die as peace.</p></li>
+        <li class="quote"><p>Love is mine, war is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Every sorrow I bury becomes the seed of tomorrow's joy.</p></li>
+        <li class="quote"><p>I am a moment after forever, the calm before the ruin.</p></li>
+        <li class="quote"><p>I chase forever through a moment, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>The shadow is mine, the mirror is yours — I am the paradox.</p></li>
+        <li class="quote"><p>You lit my the lie, then left me in the promise.</p></li>
+        <li class="quote"><p>I wasn't built for the wound; I was built to survive the scar.</p></li>
+        <li class="quote"><p>You spoke of the roar; I already knew the whisper.</p></li>
+        <li class="quote"><p>What looks like thunder from afar is only silence up close.</p></li>
+        <li class="quote"><p>I burned in iron, drowned in the feather, and called it living.</p></li>
+        <li class="quote"><p>I burned in blood, drowned in ink, and called it living.</p></li>
+        <li class="quote"><p>You called it the drought. I called it the flood. We were both right.</p></li>
+        <li class="quote"><p>I chase the storm through the calm, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>The flame and frost — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You called it blood. I called it ink. We were both right.</p></li>
+        <li class="quote"><p>I wasn't built for oblivion; I was built to survive memory.</p></li>
+        <li class="quote"><p>The thorn feels like the rose — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Between love and war, I built a home no one visits.</p></li>
+        <li class="quote"><p>You spoke of chaos; I already knew peace.</p></li>
+        <li class="quote"><p>I was your the cage, now I'm just the crown.</p></li>
+        <li class="quote"><p>The tide was never mine to keep, only the shore stayed.</p></li>
+        <li class="quote"><p>Every dark I bury becomes the seed of tomorrow's light.</p></li>
+        <li class="quote"><p>Somewhere between the nightmare and the dream, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You spoke of the dream; I already knew the nightmare.</p></li>
+        <li class="quote"><p>I was your sorrow, now I'm just joy.</p></li>
+        <li class="quote"><p>Somewhere between the heart and stone, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You spoke of drought; I already knew rain.</p></li>
+        <li class="quote"><p>I was born from the void, but I will die as the echo.</p></li>
+        <li class="quote"><p>Chains was never mine to keep, only wings stayed.</p></li>
+        <li class="quote"><p>They see stone; I only ever felt the heart.</p></li>
+        <li class="quote"><p>I gave the world the scar, and kept the wound for myself.</p></li>
+        <li class="quote"><p>I was your the whisper, now I'm just the roar.</p></li>
+        <li class="quote"><p>I was born from a moment, but I will die as forever.</p></li>
+        <li class="quote"><p>Every the ocean I bury becomes the seed of tomorrow's the desert.</p></li>
+        <li class="quote"><p>I searched for oblivion and found memory wearing its face.</p></li>
+        <li class="quote"><p>I was your the storm, now I'm just the calm.</p></li>
+        <li class="quote"><p>If silence is a wound, then I am the scream you'll never touch again.</p></li>
+        <li class="quote"><p>I wasn't built for ink; I was built to survive blood.</p></li>
+        <li class="quote"><p>If the echo is a wound, then I am the void you'll never touch again.</p></li>
+        <li class="quote"><p>You gave me a moment, I gave you forever — that's how we broke.</p></li>
+        <li class="quote"><p>I burned in the echo, drowned in the void, and called it living.</p></li>
+        <li class="quote"><p>I searched for iron and found the feather wearing its face.</p></li>
+        <li class="quote"><p>You spoke of the rose; I already knew the thorn.</p></li>
+        <li class="quote"><p>I am chaos after peace, the calm before the ruin.</p></li>
+        <li class="quote"><p>I chase the flood through the drought, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>They see rain; I only ever felt drought.</p></li>
+        <li class="quote"><p>I wasn't built for the frost; I was built to survive the ember.</p></li>
+        <li class="quote"><p>You gave me the storm, I gave you the calm — that's how we broke.</p></li>
+        <li class="quote"><p>I was born from the mirror, but I will die as the shadow.</p></li>
+        <li class="quote"><p>You called it the roar. I called it the whisper. We were both right.</p></li>
+        <li class="quote"><p>Between the thorn and the rose, I built a home no one visits.</p></li>
+        <li class="quote"><p>They see iron; I only ever felt the feather.</p></li>
+        <li class="quote"><p>Between thunder and silence, I built a home no one visits.</p></li>
+        <li class="quote"><p>Chains feels like wings — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You gave me hope, I gave you despair — that's how we broke.</p></li>
+        <li class="quote"><p>Despair feels like hope — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I was born from the roar, but I will die as the whisper.</p></li>
+        <li class="quote"><p>I burned in the wildfire, drowned in the winter, and called it living.</p></li>
+        <li class="quote"><p>Every the whisper ends the same way — as the roar I have to carry.</p></li>
+        <li class="quote"><p>I was your the shore, now I'm just the tide.</p></li>
+        <li class="quote"><p>Between the nightmare and the dream, I built a home no one visits.</p></li>
+        <li class="quote"><p>Somewhere between life and death, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Every the nightmare ends the same way — as the dream I have to carry.</p></li>
+        <li class="quote"><p>I am fire you feared, and ash you never entered.</p></li>
+        <li class="quote"><p>I am the rose after the thorn, the calm before the ruin.</p></li>
+        <li class="quote"><p>You lit my the vow, then left me in the void.</p></li>
+        <li class="quote"><p>I was born from the frost, but I will die as the ember.</p></li>
+        <li class="quote"><p>I am wings you feared, and chains you never entered.</p></li>
+        <li class="quote"><p>Every peace I bury becomes the seed of tomorrow's chaos.</p></li>
+        <li class="quote"><p>I chase fire through ash, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I chase the ocean through the desert, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>If the crown is a wound, then I am the cage you'll never touch again.</p></li>
+        <li class="quote"><p>Somewhere between the thorn and the rose, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You gave me joy, I gave you sorrow — that's how we broke.</p></li>
+        <li class="quote"><p>You called it freedom. I called it chains. We were both right.</p></li>
+        <li class="quote"><p>I traded the frost for the ember, and called it growing up.</p></li>
+        <li class="quote"><p>I am the void after the vow, the calm before the ruin.</p></li>
+        <li class="quote"><p>I traded the star for the dark, and called it growing up.</p></li>
+        <li class="quote"><p>Between the roots and the ruins, I built a home no one visits.</p></li>
+        <li class="quote"><p>I searched for the roar and found the whisper wearing its face.</p></li>
+        <li class="quote"><p>Wings and chains — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Between the ash and the sun, I built a home no one visits.</p></li>
+        <li class="quote"><p>What looks like hope from afar is only despair up close.</p></li>
+        <li class="quote"><p>I chase the feather through iron, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I traded oblivion for memory, and called it growing up.</p></li>
+        <li class="quote"><p>They see the storm; I only ever felt the calm.</p></li>
+        <li class="quote"><p>Somewhere between the scar and the wound, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>What looks like the heart from afar is only stone up close.</p></li>
+        <li class="quote"><p>I wasn't built for the echo; I was built to survive the void.</p></li>
+        <li class="quote"><p>The cage was never mine to keep, only the crown stayed.</p></li>
+        <li class="quote"><p>If despair is a wound, then I am hope you'll never touch again.</p></li>
+        <li class="quote"><p>Every the winter I bury becomes the seed of tomorrow's the wildfire.</p></li>
+        <li class="quote"><p>I am chains you feared, and wings you never entered.</p></li>
+        <li class="quote"><p>I wasn't built for ash; I was built to survive fire.</p></li>
+        <li class="quote"><p>You gave me the shadow, I gave you the mirror — that's how we broke.</p></li>
+        <li class="quote"><p>Between the promise and the lie, I built a home no one visits.</p></li>
+        <li class="quote"><p>Thunder is mine, silence is yours — I am the paradox.</p></li>
+        <li class="quote"><p>You called it the void. I called it the echo. We were both right.</p></li>
+        <li class="quote"><p>What looks like chains from afar is only wings up close.</p></li>
+        <li class="quote"><p>I searched for frost and found the flame wearing its face.</p></li>
+        <li class="quote"><p>Oblivion was never mine to keep, only memory stayed.</p></li>
+        <li class="quote"><p>You lit my the roar, then left me in the whisper.</p></li>
+        <li class="quote"><p>If the ember is a wound, then I am the frost you'll never touch again.</p></li>
+        <li class="quote"><p>I wasn't built for dusk; I was built to survive dawn.</p></li>
+        <li class="quote"><p>You lit my the frost, then left me in the ember.</p></li>
+        <li class="quote"><p>What looks like ash from afar is only fire up close.</p></li>
+        <li class="quote"><p>They see the thorn; I only ever felt the rose.</p></li>
+        <li class="quote"><p>I gave the world the promise, and kept the lie for myself.</p></li>
+        <li class="quote"><p>They see fire; I only ever felt ash.</p></li>
+        <li class="quote"><p>You spoke of the drought; I already knew the flood.</p></li>
+        <li class="quote"><p>I searched for silence and found the scream wearing its face.</p></li>
+        <li class="quote"><p>Every the heart ends the same way — as stone I have to carry.</p></li>
+        <li class="quote"><p>I chase war through love, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I searched for the cage and found the crown wearing its face.</p></li>
+        <li class="quote"><p>They see a moment; I only ever felt forever.</p></li>
+        <li class="quote"><p>You spoke of forever; I already knew a moment.</p></li>
+        <li class="quote"><p>Death is mine, life is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Between forever and a moment, I built a home no one visits.</p></li>
+        <li class="quote"><p>You spoke of the promise; I already knew the lie.</p></li>
+        <li class="quote"><p>The calm and the storm — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Between the void and the echo, I built a home no one visits.</p></li>
+        <li class="quote"><p>I was born from peace, but I will die as chaos.</p></li>
+        <li class="quote"><p>You lit my wings, then left me in chains.</p></li>
+        <li class="quote"><p>The cage feels like the crown — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You lit my the void, then left me in the echo.</p></li>
+        <li class="quote"><p>Every the roots I bury becomes the seed of tomorrow's the ruins.</p></li>
+        <li class="quote"><p>I wasn't built for frost; I was built to survive the flame.</p></li>
+        <li class="quote"><p>The shadow was never mine to keep, only the mirror stayed.</p></li>
+        <li class="quote"><p>Ink feels like blood — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Silence feels like the scream — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Despair is mine, hope is yours — I am the paradox.</p></li>
+        <li class="quote"><p>The whisper feels like the roar — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I was born from wings, but I will die as chains.</p></li>
+        <li class="quote"><p>I burned in the ocean, drowned in the desert, and called it living.</p></li>
+        <li class="quote"><p>I am the roar after the whisper, the calm before the ruin.</p></li>
+        <li class="quote"><p>Every despair I bury becomes the seed of tomorrow's hope.</p></li>
+        <li class="quote"><p>I gave the world the void, and kept the echo for myself.</p></li>
+        <li class="quote"><p>Every the rose I bury becomes the seed of tomorrow's the thorn.</p></li>
+        <li class="quote"><p>You lit my the drought, then left me in the flood.</p></li>
+        <li class="quote"><p>The void was never mine to keep, only the vow stayed.</p></li>
+        <li class="quote"><p>I gave the world the nightmare, and kept the dream for myself.</p></li>
+        <li class="quote"><p>The wound was never mine to keep, only the scar stayed.</p></li>
+        <li class="quote"><p>I am the void after the echo, the calm before the ruin.</p></li>
+        <li class="quote"><p>The promise was never mine to keep, only the lie stayed.</p></li>
+        <li class="quote"><p>I searched for the dream and found the nightmare wearing its face.</p></li>
+        <li class="quote"><p>If rain is a wound, then I am drought you'll never touch again.</p></li>
+        <li class="quote"><p>The wound is mine, the scar is yours — I am the paradox.</p></li>
+        <li class="quote"><p>You gave me the crown, I gave you the cage — that's how we broke.</p></li>
+        <li class="quote"><p>You gave me the thorn, I gave you the rose — that's how we broke.</p></li>
+        <li class="quote"><p>I chase the frost through the ember, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I was born from despair, but I will die as hope.</p></li>
+        <li class="quote"><p>Every the echo I bury becomes the seed of tomorrow's the void.</p></li>
+        <li class="quote"><p>I gave the world the tide, and kept the shore for myself.</p></li>
+        <li class="quote"><p>The flame was never mine to keep, only frost stayed.</p></li>
+        <li class="quote"><p>I gave the world dusk, and kept dawn for myself.</p></li>
+        <li class="quote"><p>You spoke of sorrow; I already knew joy.</p></li>
+        <li class="quote"><p>You lit my dawn, then left me in dusk.</p></li>
+        <li class="quote"><p>You spoke of memory; I already knew oblivion.</p></li>
+        <li class="quote"><p>Dawn is mine, dusk is yours — I am the paradox.</p></li>
+        <li class="quote"><p>You spoke of peace; I already knew chaos.</p></li>
+        <li class="quote"><p>I gave the world the roots, and kept the ruins for myself.</p></li>
+        <li class="quote"><p>Between wings and chains, I built a home no one visits.</p></li>
+        <li class="quote"><p>You gave me drought, I gave you rain — that's how we broke.</p></li>
+        <li class="quote"><p>I was born from rain, but I will die as drought.</p></li>
+        <li class="quote"><p>I was born from the thorn, but I will die as the rose.</p></li>
+        <li class="quote"><p>You spoke of the whisper; I already knew the roar.</p></li>
+        <li class="quote"><p>The dream is mine, the nightmare is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I gave the world the star, and kept the dark for myself.</p></li>
+        <li class="quote"><p>You gave me chains, I gave you wings — that's how we broke.</p></li>
+        <li class="quote"><p>The wound feels like the scar — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Every thunder ends the same way — as silence I have to carry.</p></li>
+        <li class="quote"><p>If love is a wound, then I am war you'll never touch again.</p></li>
+        <li class="quote"><p>I was your light, now I'm just dark.</p></li>
+        <li class="quote"><p>I traded joy for sorrow, and called it growing up.</p></li>
+        <li class="quote"><p>The thorn was never mine to keep, only the rose stayed.</p></li>
+        <li class="quote"><p>I am ash you feared, and fire you never entered.</p></li>
+        <li class="quote"><p>If ink is a wound, then I am blood you'll never touch again.</p></li>
+        <li class="quote"><p>I am dark you feared, and light you never entered.</p></li>
+        <li class="quote"><p>What looks like fire from afar is only ash up close.</p></li>
+        <li class="quote"><p>I burned in wings, drowned in chains, and called it living.</p></li>
+        <li class="quote"><p>I burned in the promise, drowned in the lie, and called it living.</p></li>
+        <li class="quote"><p>I traded the desert for the ocean, and called it growing up.</p></li>
+        <li class="quote"><p>Every freedom ends the same way — as chains I have to carry.</p></li>
+        <li class="quote"><p>The dream was never mine to keep, only the nightmare stayed.</p></li>
+        <li class="quote"><p>You called it the dream. I called it the nightmare. We were both right.</p></li>
+        <li class="quote"><p>Somewhere between fire and ash, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You spoke of the flame; I already knew frost.</p></li>
+        <li class="quote"><p>Sorrow feels like joy — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Dawn was never mine to keep, only dusk stayed.</p></li>
+        <li class="quote"><p>I searched for ink and found blood wearing its face.</p></li>
+        <li class="quote"><p>They see war; I only ever felt love.</p></li>
+        <li class="quote"><p>I burned in a moment, drowned in forever, and called it living.</p></li>
+        <li class="quote"><p>Every oblivion ends the same way — as memory I have to carry.</p></li>
+        <li class="quote"><p>Between fire and ash, I built a home no one visits.</p></li>
+        <li class="quote"><p>You spoke of the roots; I already knew the ruins.</p></li>
+        <li class="quote"><p>I searched for the shore and found the tide wearing its face.</p></li>
+        <li class="quote"><p>You lit my joy, then left me in sorrow.</p></li>
+        <li class="quote"><p>What looks like the promise from afar is only the lie up close.</p></li>
+        <li class="quote"><p>I chase the shore through the tide, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>Every the flood ends the same way — as the drought I have to carry.</p></li>
+        <li class="quote"><p>You lit my thunder, then left me in silence.</p></li>
+        <li class="quote"><p>I was your joy, now I'm just sorrow.</p></li>
+        <li class="quote"><p>I was your chains, now I'm just wings.</p></li>
+        <li class="quote"><p>The rose was never mine to keep, only the thorn stayed.</p></li>
+        <li class="quote"><p>You lit my forever, then left me in a moment.</p></li>
+        <li class="quote"><p>You spoke of the frost; I already knew the ember.</p></li>
+        <li class="quote"><p>Life and death — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>If the desert is a wound, then I am the ocean you'll never touch again.</p></li>
+        <li class="quote"><p>The ember feels like the frost — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I was born from chains, but I will die as wings.</p></li>
+        <li class="quote"><p>What looks like despair from afar is only hope up close.</p></li>
+        <li class="quote"><p>The wildfire was never mine to keep, only the winter stayed.</p></li>
+        <li class="quote"><p>I searched for the winter and found the wildfire wearing its face.</p></li>
+        <li class="quote"><p>I am the wildfire you feared, and the winter you never entered.</p></li>
+        <li class="quote"><p>Chains was never mine to keep, only freedom stayed.</p></li>
+        <li class="quote"><p>I am ash after fire, the calm before the ruin.</p></li>
+        <li class="quote"><p>I am sorrow after joy, the calm before the ruin.</p></li>
+        <li class="quote"><p>Between the ruins and the roots, I built a home no one visits.</p></li>
+        <li class="quote"><p>You spoke of oblivion; I already knew memory.</p></li>
+        <li class="quote"><p>You called it the winter. I called it the wildfire. We were both right.</p></li>
+        <li class="quote"><p>Every despair ends the same way — as hope I have to carry.</p></li>
+        <li class="quote"><p>Every the calm ends the same way — as the storm I have to carry.</p></li>
+        <li class="quote"><p>I am the roots you feared, and the ruins you never entered.</p></li>
+        <li class="quote"><p>You called it the wound. I called it the scar. We were both right.</p></li>
+        <li class="quote"><p>I was your the vow, now I'm just the void.</p></li>
+        <li class="quote"><p>I chase the shadow through the mirror, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>The feather feels like iron — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I am death after life, the calm before the ruin.</p></li>
+        <li class="quote"><p>Every the dark I bury becomes the seed of tomorrow's the star.</p></li>
+        <li class="quote"><p>I wasn't built for the storm; I was built to survive the calm.</p></li>
+        <li class="quote"><p>I wasn't built for the feather; I was built to survive iron.</p></li>
+        <li class="quote"><p>I am despair you feared, and hope you never entered.</p></li>
+        <li class="quote"><p>I wasn't built for the dark; I was built to survive the star.</p></li>
+        <li class="quote"><p>You lit my the storm, then left me in the calm.</p></li>
+        <li class="quote"><p>If a moment is a wound, then I am forever you'll never touch again.</p></li>
+        <li class="quote"><p>I chase chains through wings, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I searched for death and found life wearing its face.</p></li>
+        <li class="quote"><p>I am the shore you feared, and the tide you never entered.</p></li>
+        <li class="quote"><p>Forever was never mine to keep, only a moment stayed.</p></li>
+        <li class="quote"><p>What looks like dark from afar is only light up close.</p></li>
+        <li class="quote"><p>I am the void you feared, and the echo you never entered.</p></li>
+        <li class="quote"><p>I burned in the frost, drowned in the ember, and called it living.</p></li>
+        <li class="quote"><p>You gave me the scream, I gave you silence — that's how we broke.</p></li>
+        <li class="quote"><p>I am ink after blood, the calm before the ruin.</p></li>
+        <li class="quote"><p>I traded love for war, and called it growing up.</p></li>
+        <li class="quote"><p>I burned in the storm, drowned in the calm, and called it living.</p></li>
+        <li class="quote"><p>I am the scar after the wound, the calm before the ruin.</p></li>
+        <li class="quote"><p>I was your iron, now I'm just the feather.</p></li>
+        <li class="quote"><p>The thorn and the rose — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I wasn't built for death; I was built to survive life.</p></li>
+        <li class="quote"><p>You gave me the tide, I gave you the shore — that's how we broke.</p></li>
+        <li class="quote"><p>You spoke of the shadow; I already knew the mirror.</p></li>
+        <li class="quote"><p>You lit my the dream, then left me in the nightmare.</p></li>
+        <li class="quote"><p>You spoke of chains; I already knew freedom.</p></li>
+        <li class="quote"><p>What looks like chaos from afar is only peace up close.</p></li>
+        <li class="quote"><p>They see the void; I only ever felt the vow.</p></li>
+        <li class="quote"><p>Somewhere between love and war, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Somewhere between the flood and the drought, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I wasn't built for the roar; I was built to survive the whisper.</p></li>
+        <li class="quote"><p>I burned in the ruins, drowned in the roots, and called it living.</p></li>
+        <li class="quote"><p>Blood is mine, ink is yours — I am the paradox.</p></li>
+        <li class="quote"><p>You gave me dusk, I gave you dawn — that's how we broke.</p></li>
+        <li class="quote"><p>I chase hope through despair, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I was born from the crown, but I will die as the cage.</p></li>
+        <li class="quote"><p>I wasn't built for the dream; I was built to survive the nightmare.</p></li>
+        <li class="quote"><p>They see death; I only ever felt life.</p></li>
+        <li class="quote"><p>You lit my the thorn, then left me in the rose.</p></li>
+        <li class="quote"><p>They see the ash; I only ever felt the sun.</p></li>
+        <li class="quote"><p>I burned in the roots, drowned in the ruins, and called it living.</p></li>
+        <li class="quote"><p>You lit my silence, then left me in thunder.</p></li>
+        <li class="quote"><p>I burned in freedom, drowned in chains, and called it living.</p></li>
+        <li class="quote"><p>They see blood; I only ever felt ink.</p></li>
+        <li class="quote"><p>I was born from the ash, but I will die as the sun.</p></li>
+        <li class="quote"><p>If the sun is a wound, then I am the ash you'll never touch again.</p></li>
+        <li class="quote"><p>I chase the rose through the thorn, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>You spoke of the winter; I already knew the wildfire.</p></li>
+        <li class="quote"><p>I traded drought for rain, and called it growing up.</p></li>
+        <li class="quote"><p>I am drought after rain, the calm before the ruin.</p></li>
+        <li class="quote"><p>You lit my despair, then left me in hope.</p></li>
+        <li class="quote"><p>You spoke of the cage; I already knew the crown.</p></li>
+        <li class="quote"><p>Fire and ash — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I traded the feather for iron, and called it growing up.</p></li>
+        <li class="quote"><p>Iron feels like the feather — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I wasn't built for the scream; I was built to survive silence.</p></li>
+        <li class="quote"><p>Every frost I bury becomes the seed of tomorrow's the flame.</p></li>
+        <li class="quote"><p>You spoke of dusk; I already knew dawn.</p></li>
+        <li class="quote"><p>I am thunder you feared, and silence you never entered.</p></li>
+        <li class="quote"><p>The drought and the flood — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I am iron you feared, and the feather you never entered.</p></li>
+        <li class="quote"><p>I traded hope for despair, and called it growing up.</p></li>
+        <li class="quote"><p>Between the ember and the frost, I built a home no one visits.</p></li>
+        <li class="quote"><p>I was born from the whisper, but I will die as the roar.</p></li>
+        <li class="quote"><p>I was your the scream, now I'm just silence.</p></li>
+        <li class="quote"><p>Every chains ends the same way — as wings I have to carry.</p></li>
+        <li class="quote"><p>I gave the world the wildfire, and kept the winter for myself.</p></li>
+        <li class="quote"><p>The vow feels like the void — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Somewhere between hope and despair, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>The ash feels like the sun — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Every the mirror ends the same way — as the shadow I have to carry.</p></li>
+        <li class="quote"><p>If silence is a wound, then I am thunder you'll never touch again.</p></li>
+        <li class="quote"><p>I wasn't built for blood; I was built to survive ink.</p></li>
+        <li class="quote"><p>A moment and forever — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>The scream feels like silence — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You lit my the rose, then left me in the thorn.</p></li>
+        <li class="quote"><p>The ocean was never mine to keep, only the desert stayed.</p></li>
+        <li class="quote"><p>What looks like the ruins from afar is only the roots up close.</p></li>
+        <li class="quote"><p>The drought is mine, the flood is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I chase memory through oblivion, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>You called it the scream. I called it silence. We were both right.</p></li>
+        <li class="quote"><p>I searched for the tide and found the shore wearing its face.</p></li>
+        <li class="quote"><p>Somewhere between the roar and the whisper, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Despair and hope — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I am the sun after the ash, the calm before the ruin.</p></li>
+        <li class="quote"><p>I gave the world iron, and kept the feather for myself.</p></li>
+        <li class="quote"><p>I searched for blood and found ink wearing its face.</p></li>
+        <li class="quote"><p>You gave me love, I gave you war — that's how we broke.</p></li>
+        <li class="quote"><p>You called it the frost. I called it the ember. We were both right.</p></li>
+        <li class="quote"><p>You gave me the calm, I gave you the storm — that's how we broke.</p></li>
+        <li class="quote"><p>I traded the drought for the flood, and called it growing up.</p></li>
+        <li class="quote"><p>I am the scream you feared, and silence you never entered.</p></li>
+        <li class="quote"><p>I was your the rose, now I'm just the thorn.</p></li>
+        <li class="quote"><p>I am the vow you feared, and the void you never entered.</p></li>
+        <li class="quote"><p>What looks like frost from afar is only the flame up close.</p></li>
+        <li class="quote"><p>If the void is a wound, then I am the vow you'll never touch again.</p></li>
+        <li class="quote"><p>You spoke of a moment; I already knew forever.</p></li>
+        <li class="quote"><p>Every the shadow I bury becomes the seed of tomorrow's the mirror.</p></li>
+        <li class="quote"><p>They see hope; I only ever felt despair.</p></li>
+        <li class="quote"><p>Somewhere between rain and drought, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I am the ruins after the roots, the calm before the ruin.</p></li>
+        <li class="quote"><p>You lit my oblivion, then left me in memory.</p></li>
+        <li class="quote"><p>I searched for fire and found ash wearing its face.</p></li>
+        <li class="quote"><p>You spoke of the storm; I already knew the calm.</p></li>
+        <li class="quote"><p>The winter was never mine to keep, only the wildfire stayed.</p></li>
+        <li class="quote"><p>I searched for the frost and found the ember wearing its face.</p></li>
+        <li class="quote"><p>Every the heart I bury becomes the seed of tomorrow's stone.</p></li>
+        <li class="quote"><p>I chase the heart through stone, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>The drought feels like the flood — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You called it the desert. I called it the ocean. We were both right.</p></li>
+        <li class="quote"><p>The vow was never mine to keep, only the void stayed.</p></li>
+        <li class="quote"><p>Every dusk I bury becomes the seed of tomorrow's dawn.</p></li>
+        <li class="quote"><p>What looks like a moment from afar is only forever up close.</p></li>
+        <li class="quote"><p>Love feels like war — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I burned in sorrow, drowned in joy, and called it living.</p></li>
+        <li class="quote"><p>You called it light. I called it dark. We were both right.</p></li>
+        <li class="quote"><p>Dawn and dusk — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You spoke of the desert; I already knew the ocean.</p></li>
+        <li class="quote"><p>I chase the desert through the ocean, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>The shore is mine, the tide is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I wasn't built for the crown; I was built to survive the cage.</p></li>
+        <li class="quote"><p>I am sorrow you feared, and joy you never entered.</p></li>
+        <li class="quote"><p>I chase death through life, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>Every the tide I bury becomes the seed of tomorrow's the shore.</p></li>
+        <li class="quote"><p>I burned in the dark, drowned in the star, and called it living.</p></li>
+        <li class="quote"><p>I searched for the scar and found the wound wearing its face.</p></li>
+        <li class="quote"><p>Somewhere between thunder and silence, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I am the tide after the shore, the calm before the ruin.</p></li>
+        <li class="quote"><p>I chase a moment through forever, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I wasn't built for love; I was built to survive war.</p></li>
+        <li class="quote"><p>I burned in the winter, drowned in the wildfire, and called it living.</p></li>
+        <li class="quote"><p>I wasn't built for hope; I was built to survive despair.</p></li>
+        <li class="quote"><p>I am the winter you feared, and the wildfire you never entered.</p></li>
+        <li class="quote"><p>You called it the promise. I called it the lie. We were both right.</p></li>
+        <li class="quote"><p>Somewhere between the ash and the sun, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I was born from the promise, but I will die as the lie.</p></li>
+        <li class="quote"><p>I chase peace through chaos, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>Chains and freedom — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Between joy and sorrow, I built a home no one visits.</p></li>
+        <li class="quote"><p>Memory and oblivion — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Between the heart and stone, I built a home no one visits.</p></li>
+        <li class="quote"><p>I gave the world forever, and kept a moment for myself.</p></li>
+        <li class="quote"><p>I wasn't built for the star; I was built to survive the dark.</p></li>
+        <li class="quote"><p>Somewhere between the promise and the lie, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I gave the world war, and kept love for myself.</p></li>
+        <li class="quote"><p>I traded the storm for the calm, and called it growing up.</p></li>
+        <li class="quote"><p>I searched for the sun and found the ash wearing its face.</p></li>
+        <li class="quote"><p>I am the nightmare after the dream, the calm before the ruin.</p></li>
+        <li class="quote"><p>The flood feels like the drought — that's the paradox of being human.</p></li>
+        <li class="quote"><p>What looks like the whisper from afar is only the roar up close.</p></li>
+        <li class="quote"><p>I chase the ember through the frost, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I searched for ash and found fire wearing its face.</p></li>
+        <li class="quote"><p>The thorn is mine, the rose is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Every the lie I bury becomes the seed of tomorrow's the promise.</p></li>
+        <li class="quote"><p>Somewhere between ash and fire, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>What looks like oblivion from afar is only memory up close.</p></li>
+        <li class="quote"><p>The shore feels like the tide — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I traded the scar for the wound, and called it growing up.</p></li>
+        <li class="quote"><p>You gave me the scar, I gave you the wound — that's how we broke.</p></li>
+        <li class="quote"><p>Every dawn ends the same way — as dusk I have to carry.</p></li>
+        <li class="quote"><p>Every the ocean ends the same way — as the desert I have to carry.</p></li>
+        <li class="quote"><p>They see the cage; I only ever felt the crown.</p></li>
+        <li class="quote"><p>I was your the winter, now I'm just the wildfire.</p></li>
+        <li class="quote"><p>Somewhere between freedom and chains, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>What looks like forever from afar is only a moment up close.</p></li>
+        <li class="quote"><p>The roar and the whisper — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I am the promise you feared, and the lie you never entered.</p></li>
+        <li class="quote"><p>If chains is a wound, then I am wings you'll never touch again.</p></li>
+        <li class="quote"><p>I gave the world love, and kept war for myself.</p></li>
+        <li class="quote"><p>War and love — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Somewhere between the star and the dark, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I was born from silence, but I will die as the scream.</p></li>
+        <li class="quote"><p>Every the dark ends the same way — as the star I have to carry.</p></li>
+        <li class="quote"><p>What looks like the rose from afar is only the thorn up close.</p></li>
+        <li class="quote"><p>I gave the world death, and kept life for myself.</p></li>
+        <li class="quote"><p>The feather and iron — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>Somewhere between a moment and forever, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>Between death and life, I built a home no one visits.</p></li>
+        <li class="quote"><p>Every love ends the same way — as war I have to carry.</p></li>
+        <li class="quote"><p>I am forever you feared, and a moment you never entered.</p></li>
+        <li class="quote"><p>I am life after death, the calm before the ruin.</p></li>
+        <li class="quote"><p>What looks like the scream from afar is only silence up close.</p></li>
+        <li class="quote"><p>I am the scar you feared, and the wound you never entered.</p></li>
+        <li class="quote"><p>What looks like light from afar is only dark up close.</p></li>
+        <li class="quote"><p>You spoke of the tide; I already knew the shore.</p></li>
+        <li class="quote"><p>Somewhere between the ocean and the desert, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>What looks like the ash from afar is only the sun up close.</p></li>
+        <li class="quote"><p>I am joy you feared, and sorrow you never entered.</p></li>
+        <li class="quote"><p>I burned in dark, drowned in light, and called it living.</p></li>
+        <li class="quote"><p>What looks like dusk from afar is only dawn up close.</p></li>
+        <li class="quote"><p>I chase the winter through the wildfire, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>Every sorrow ends the same way — as joy I have to carry.</p></li>
+        <li class="quote"><p>Somewhere between sorrow and joy, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You called it the ember. I called it the frost. We were both right.</p></li>
+        <li class="quote"><p>I gave the world the shore, and kept the tide for myself.</p></li>
+        <li class="quote"><p>Joy feels like sorrow — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You spoke of the mirror; I already knew the shadow.</p></li>
+        <li class="quote"><p>The frost was never mine to keep, only the ember stayed.</p></li>
+        <li class="quote"><p>Silence and thunder — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You spoke of wings; I already knew chains.</p></li>
+        <li class="quote"><p>I gave the world peace, and kept chaos for myself.</p></li>
+        <li class="quote"><p>Oblivion and memory — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You called it drought. I called it rain. We were both right.</p></li>
+        <li class="quote"><p>Hope feels like despair — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I am the mirror you feared, and the shadow you never entered.</p></li>
+        <li class="quote"><p>You called it the flame. I called it frost. We were both right.</p></li>
+        <li class="quote"><p>I traded fire for ash, and called it growing up.</p></li>
+        <li class="quote"><p>The nightmare and the dream — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I burned in the roar, drowned in the whisper, and called it living.</p></li>
+        <li class="quote"><p>I gave the world silence, and kept thunder for myself.</p></li>
+        <li class="quote"><p>Silence is mine, the scream is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Sorrow and joy — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I wasn't built for dark; I was built to survive light.</p></li>
+        <li class="quote"><p>The desert was never mine to keep, only the ocean stayed.</p></li>
+        <li class="quote"><p>I burned in frost, drowned in the flame, and called it living.</p></li>
+        <li class="quote"><p>You lit my chains, then left me in wings.</p></li>
+        <li class="quote"><p>I wasn't built for the promise; I was built to survive the lie.</p></li>
+        <li class="quote"><p>What looks like silence from afar is only the scream up close.</p></li>
+        <li class="quote"><p>I burned in silence, drowned in the scream, and called it living.</p></li>
+        <li class="quote"><p>They see the tide; I only ever felt the shore.</p></li>
+        <li class="quote"><p>I searched for rain and found drought wearing its face.</p></li>
+        <li class="quote"><p>I am silence you feared, and thunder you never entered.</p></li>
+        <li class="quote"><p>I was born from the desert, but I will die as the ocean.</p></li>
+        <li class="quote"><p>You gave me ink, I gave you blood — that's how we broke.</p></li>
+        <li class="quote"><p>Somewhere between the shore and the tide, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I burned in the ash, drowned in the sun, and called it living.</p></li>
+        <li class="quote"><p>Somewhere between the feather and iron, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You called it memory. I called it oblivion. We were both right.</p></li>
+        <li class="quote"><p>Every joy ends the same way — as sorrow I have to carry.</p></li>
+        <li class="quote"><p>I chase the thorn through the rose, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I was born from the vow, but I will die as the void.</p></li>
+        <li class="quote"><p>They see silence; I only ever felt the scream.</p></li>
+        <li class="quote"><p>You gave me blood, I gave you ink — that's how we broke.</p></li>
+        <li class="quote"><p>Somewhere between despair and hope, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I gave the world drought, and kept rain for myself.</p></li>
+        <li class="quote"><p>I wasn't built for the whisper; I was built to survive the roar.</p></li>
+        <li class="quote"><p>Peace feels like chaos — that's the paradox of being human.</p></li>
+        <li class="quote"><p>I burned in thunder, drowned in silence, and called it living.</p></li>
+        <li class="quote"><p>Every the void ends the same way — as the vow I have to carry.</p></li>
+        <li class="quote"><p>If the rose is a wound, then I am the thorn you'll never touch again.</p></li>
+        <li class="quote"><p>Every the cage I bury becomes the seed of tomorrow's the crown.</p></li>
+        <li class="quote"><p>I am the vow after the void, the calm before the ruin.</p></li>
+        <li class="quote"><p>Between the lie and the promise, I built a home no one visits.</p></li>
+        <li class="quote"><p>What looks like the ocean from afar is only the desert up close.</p></li>
+        <li class="quote"><p>Chaos is mine, peace is yours — I am the paradox.</p></li>
+        <li class="quote"><p>What looks like the drought from afar is only the flood up close.</p></li>
+        <li class="quote"><p>They see light; I only ever felt dark.</p></li>
+        <li class="quote"><p>Between the echo and the void, I built a home no one visits.</p></li>
+        <li class="quote"><p>They see the nightmare; I only ever felt the dream.</p></li>
+        <li class="quote"><p>You called it a moment. I called it forever. We were both right.</p></li>
+        <li class="quote"><p>They see life; I only ever felt death.</p></li>
+        <li class="quote"><p>If the shadow is a wound, then I am the mirror you'll never touch again.</p></li>
+        <li class="quote"><p>What looks like death from afar is only life up close.</p></li>
+        <li class="quote"><p>I am the crown you feared, and the cage you never entered.</p></li>
+        <li class="quote"><p>I searched for the wound and found the scar wearing its face.</p></li>
+        <li class="quote"><p>Every the desert I bury becomes the seed of tomorrow's the ocean.</p></li>
+        <li class="quote"><p>The frost and the ember — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I am forever after a moment, the calm before the ruin.</p></li>
+        <li class="quote"><p>I wasn't built for life; I was built to survive death.</p></li>
+        <li class="quote"><p>They see ash; I only ever felt fire.</p></li>
+        <li class="quote"><p>The desert is mine, the ocean is yours — I am the paradox.</p></li>
+        <li class="quote"><p>You spoke of the crown; I already knew the cage.</p></li>
+        <li class="quote"><p>The dream and the nightmare — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You spoke of silence; I already knew the scream.</p></li>
+        <li class="quote"><p>I was your death, now I'm just life.</p></li>
+        <li class="quote"><p>I gave the world the void, and kept the vow for myself.</p></li>
+        <li class="quote"><p>The void and the vow — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I was your the ruins, now I'm just the roots.</p></li>
+        <li class="quote"><p>What looks like chains from afar is only freedom up close.</p></li>
+        <li class="quote"><p>I wasn't built for light; I was built to survive dark.</p></li>
+        <li class="quote"><p>If fire is a wound, then I am ash you'll never touch again.</p></li>
+        <li class="quote"><p>I searched for the rose and found the thorn wearing its face.</p></li>
+        <li class="quote"><p>I wasn't built for thunder; I was built to survive silence.</p></li>
+        <li class="quote"><p>I was born from the storm, but I will die as the calm.</p></li>
+        <li class="quote"><p>The void is mine, the echo is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I wasn't built for the vow; I was built to survive the void.</p></li>
+        <li class="quote"><p>Between a moment and forever, I built a home no one visits.</p></li>
+        <li class="quote"><p>I wasn't built for the ash; I was built to survive the sun.</p></li>
+        <li class="quote"><p>I burned in the mirror, drowned in the shadow, and called it living.</p></li>
+        <li class="quote"><p>I wasn't built for the thorn; I was built to survive the rose.</p></li>
+        <li class="quote"><p>I chase love through war, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I gave the world the heart, and kept stone for myself.</p></li>
+        <li class="quote"><p>Rain is mine, drought is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I burned in fire, drowned in ash, and called it living.</p></li>
+        <li class="quote"><p>Every the void I bury becomes the seed of tomorrow's the vow.</p></li>
+        <li class="quote"><p>You lit my the wound, then left me in the scar.</p></li>
+        <li class="quote"><p>If thunder is a wound, then I am silence you'll never touch again.</p></li>
+        <li class="quote"><p>What looks like iron from afar is only the feather up close.</p></li>
+        <li class="quote"><p>You spoke of dawn; I already knew dusk.</p></li>
+        <li class="quote"><p>You spoke of the void; I already knew the vow.</p></li>
+        <li class="quote"><p>I gave the world wings, and kept chains for myself.</p></li>
+        <li class="quote"><p>I was born from the ruins, but I will die as the roots.</p></li>
+        <li class="quote"><p>I gave the world hope, and kept despair for myself.</p></li>
+        <li class="quote"><p>I traded the flame for frost, and called it growing up.</p></li>
+        <li class="quote"><p>The roots and the ruins — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I am the nightmare you feared, and the dream you never entered.</p></li>
+        <li class="quote"><p>I searched for the mirror and found the shadow wearing its face.</p></li>
+        <li class="quote"><p>You lit my frost, then left me in the flame.</p></li>
+        <li class="quote"><p>What looks like the feather from afar is only iron up close.</p></li>
+        <li class="quote"><p>They see oblivion; I only ever felt memory.</p></li>
+        <li class="quote"><p>Between the void and the vow, I built a home no one visits.</p></li>
+        <li class="quote"><p>What looks like dawn from afar is only dusk up close.</p></li>
+        <li class="quote"><p>I was born from the ocean, but I will die as the desert.</p></li>
+        <li class="quote"><p>Every the storm ends the same way — as the calm I have to carry.</p></li>
+        <li class="quote"><p>I gave the world despair, and kept hope for myself.</p></li>
+        <li class="quote"><p>I burned in the rose, drowned in the thorn, and called it living.</p></li>
+        <li class="quote"><p>What looks like the star from afar is only the dark up close.</p></li>
+        <li class="quote"><p>I chase silence through thunder, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>You lit my the winter, then left me in the wildfire.</p></li>
+        <li class="quote"><p>The mirror is mine, the shadow is yours — I am the paradox.</p></li>
+        <li class="quote"><p>Peace and chaos — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I gave the world the scream, and kept silence for myself.</p></li>
+        <li class="quote"><p>If the vow is a wound, then I am the void you'll never touch again.</p></li>
+        <li class="quote"><p>You called it chains. I called it wings. We were both right.</p></li>
+        <li class="quote"><p>Between blood and ink, I built a home no one visits.</p></li>
+        <li class="quote"><p>I gave the world the whisper, and kept the roar for myself.</p></li>
+        <li class="quote"><p>Between the storm and the calm, I built a home no one visits.</p></li>
+        <li class="quote"><p>I gave the world the sun, and kept the ash for myself.</p></li>
+        <li class="quote"><p>I traded the crown for the cage, and called it growing up.</p></li>
+        <li class="quote"><p>Between chains and freedom, I built a home no one visits.</p></li>
+        <li class="quote"><p>I was your the thorn, now I'm just the rose.</p></li>
+        <li class="quote"><p>I searched for the star and found the dark wearing its face.</p></li>
+        <li class="quote"><p>What looks like the echo from afar is only the void up close.</p></li>
+        <li class="quote"><p>Every the crown ends the same way — as the cage I have to carry.</p></li>
+        <li class="quote"><p>You spoke of despair; I already knew hope.</p></li>
+        <li class="quote"><p>Wings was never mine to keep, only chains stayed.</p></li>
+        <li class="quote"><p>You called it the ocean. I called it the desert. We were both right.</p></li>
+        <li class="quote"><p>I was born from silence, but I will die as thunder.</p></li>
+        <li class="quote"><p>You gave me the ember, I gave you the frost — that's how we broke.</p></li>
+        <li class="quote"><p>Somewhere between war and love, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I was your fire, now I'm just ash.</p></li>
+        <li class="quote"><p>You called it sorrow. I called it joy. We were both right.</p></li>
+        <li class="quote"><p>You lit my chaos, then left me in peace.</p></li>
+        <li class="quote"><p>I searched for wings and found chains wearing its face.</p></li>
+        <li class="quote"><p>The echo and the void — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You gave me the lie, I gave you the promise — that's how we broke.</p></li>
+        <li class="quote"><p>Every fire I bury becomes the seed of tomorrow's ash.</p></li>
+        <li class="quote"><p>I am the ocean after the desert, the calm before the ruin.</p></li>
+        <li class="quote"><p>I traded the calm for the storm, and called it growing up.</p></li>
+        <li class="quote"><p>I chase the ruins through the roots, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>Freedom feels like chains — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You spoke of ink; I already knew blood.</p></li>
+        <li class="quote"><p>I wasn't built for the winter; I was built to survive the wildfire.</p></li>
+        <li class="quote"><p>The rose feels like the thorn — that's the paradox of being human.</p></li>
+        <li class="quote"><p>The winter is mine, the wildfire is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I burned in the ember, drowned in the frost, and called it living.</p></li>
+        <li class="quote"><p>You spoke of the void; I already knew the echo.</p></li>
+        <li class="quote"><p>Between the calm and the storm, I built a home no one visits.</p></li>
+        <li class="quote"><p>Every the ember I bury becomes the seed of tomorrow's the frost.</p></li>
+        <li class="quote"><p>The mirror and the shadow — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>I was your the void, now I'm just the echo.</p></li>
+        <li class="quote"><p>Every the tide ends the same way — as the shore I have to carry.</p></li>
+        <li class="quote"><p>I am the flood you feared, and the drought you never entered.</p></li>
+        <li class="quote"><p>They see wings; I only ever felt chains.</p></li>
+        <li class="quote"><p>I am chains after wings, the calm before the ruin.</p></li>
+        <li class="quote"><p>Chains feels like freedom — that's the paradox of being human.</p></li>
+        <li class="quote"><p>If drought is a wound, then I am rain you'll never touch again.</p></li>
+        <li class="quote"><p>Somewhere between drought and rain, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>You lit my silence, then left me in the scream.</p></li>
+        <li class="quote"><p>Dusk and dawn — I carry both, and neither saves me.</p></li>
+        <li class="quote"><p>You spoke of chains; I already knew wings.</p></li>
+        <li class="quote"><p>I searched for the shadow and found the mirror wearing its face.</p></li>
+        <li class="quote"><p>I was born from chains, but I will die as freedom.</p></li>
+        <li class="quote"><p>I am the desert you feared, and the ocean you never entered.</p></li>
+        <li class="quote"><p>Every a moment ends the same way — as forever I have to carry.</p></li>
+        <li class="quote"><p>Every the flame ends the same way — as frost I have to carry.</p></li>
+        <li class="quote"><p>Every the scream I bury becomes the seed of tomorrow's silence.</p></li>
+        <li class="quote"><p>The promise is mine, the lie is yours — I am the paradox.</p></li>
+        <li class="quote"><p>The nightmare feels like the dream — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You called it the shadow. I called it the mirror. We were both right.</p></li>
+        <li class="quote"><p>Between chains and wings, I built a home no one visits.</p></li>
+        <li class="quote"><p>If frost is a wound, then I am the flame you'll never touch again.</p></li>
+        <li class="quote"><p>I burned in light, drowned in dark, and called it living.</p></li>
+        <li class="quote"><p>What looks like joy from afar is only sorrow up close.</p></li>
+        <li class="quote"><p>The heart was never mine to keep, only stone stayed.</p></li>
+        <li class="quote"><p>I chase freedom through chains, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I traded ash for fire, and called it growing up.</p></li>
+        <li class="quote"><p>The ruins was never mine to keep, only the roots stayed.</p></li>
+        <li class="quote"><p>You gave me wings, I gave you chains — that's how we broke.</p></li>
+        <li class="quote"><p>Iron was never mine to keep, only the feather stayed.</p></li>
+        <li class="quote"><p>I am dark after light, the calm before the ruin.</p></li>
+        <li class="quote"><p>They see the whisper; I only ever felt the roar.</p></li>
+        <li class="quote"><p>If memory is a wound, then I am oblivion you'll never touch again.</p></li>
+        <li class="quote"><p>I was born from the sun, but I will die as the ash.</p></li>
+        <li class="quote"><p>I was your rain, now I'm just drought.</p></li>
+        <li class="quote"><p>You called it dawn. I called it dusk. We were both right.</p></li>
+        <li class="quote"><p>If sorrow is a wound, then I am joy you'll never touch again.</p></li>
+        <li class="quote"><p>I was your the heart, now I'm just stone.</p></li>
+        <li class="quote"><p>Somewhere between wings and chains, I lost the name I used to answer to.</p></li>
+        <li class="quote"><p>I gave the world frost, and kept the flame for myself.</p></li>
+        <li class="quote"><p>I burned in the scar, drowned in the wound, and called it living.</p></li>
+        <li class="quote"><p>They see the shadow; I only ever felt the mirror.</p></li>
+        <li class="quote"><p>I searched for dusk and found dawn wearing its face.</p></li>
+        <li class="quote"><p>They see the shore; I only ever felt the tide.</p></li>
+        <li class="quote"><p>Every memory I bury becomes the seed of tomorrow's oblivion.</p></li>
+        <li class="quote"><p>I wasn't built for wings; I was built to survive chains.</p></li>
+        <li class="quote"><p>Between the tide and the shore, I built a home no one visits.</p></li>
+        <li class="quote"><p>I traded the ocean for the desert, and called it growing up.</p></li>
+        <li class="quote"><p>You lit my the void, then left me in the vow.</p></li>
+        <li class="quote"><p>I am the ruins you feared, and the roots you never entered.</p></li>
+        <li class="quote"><p>I gave the world ink, and kept blood for myself.</p></li>
+        <li class="quote"><p>What looks like the winter from afar is only the wildfire up close.</p></li>
+        <li class="quote"><p>You called it the vow. I called it the void. We were both right.</p></li>
+        <li class="quote"><p>I chase sorrow through joy, yet every heartbeat kills the infinite.</p></li>
+        <li class="quote"><p>I traded despair for hope, and called it growing up.</p></li>
+        <li class="quote"><p>The ash is mine, the sun is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I wasn't built for the ember; I was built to survive the frost.</p></li>
+        <li class="quote"><p>You gave me the drought, I gave you the flood — that's how we broke.</p></li>
+        <li class="quote"><p>Every the sun ends the same way — as the ash I have to carry.</p></li>
+        <li class="quote"><p>You spoke of the star; I already knew the dark.</p></li>
+        <li class="quote"><p>I was born from ash, but I will die as fire.</p></li>
+        <li class="quote"><p>I was born from war, but I will die as love.</p></li>
+        <li class="quote"><p>Every the mirror I bury becomes the seed of tomorrow's the shadow.</p></li>
+        <li class="quote"><p>You gave me the wildfire, I gave you the winter — that's how we broke.</p></li>
+        <li class="quote"><p>Every silence ends the same way — as the scream I have to carry.</p></li>
+        <li class="quote"><p>Ash is mine, fire is yours — I am the paradox.</p></li>
+        <li class="quote"><p>I wasn't built for the shore; I was built to survive the tide.</p></li>
+        <li class="quote"><p>I gave the world the winter, and kept the wildfire for myself.</p></li>
+        <li class="quote"><p>I searched for the echo and found the void wearing its face.</p></li>
+        <li class="quote"><p>I wasn't built for the cage; I was built to survive the crown.</p></li>
+        <li class="quote"><p>Between light and dark, I built a home no one visits.</p></li>
+        <li class="quote"><p>The scar feels like the wound — that's the paradox of being human.</p></li>
+        <li class="quote"><p>You spoke of the nightmare; I already knew the dream.</p></li>
+        <li class="quote"><p>If life is a wound, then I am death you'll never touch again.</p></li>
+        <li class="quote"><p>They see silence; I only ever felt thunder.</p></li>
+        <li class="quote"><p>The void feels like the echo — that's the paradox of being human.</p></li>
+        <li class="quote"><p>Every the sun I bury becomes the seed of tomorrow's the ash.</p></li>
+        <li class="quote"><p>You gave me memory, I gave you oblivion — that's how we broke.</p></li>
+        <li class="quote"><p>I wasn't built for the ruins; I was built to survive the roots.</p></li>
+        <li class="quote"><p>I was born from the lie, but I will die as the promise.</p></li>
+        <li class="quote"><p>Chaos was never mine to keep, only peace stayed.</p></li>
+        <li class="quote"><p>I traded the roots for the ruins, and called it growing up.</p></li>
+        <li class="quote"><p>What looks like rain from afar is only drought up close.</p></li>
+        <li class="quote"><p>I was your love, now I'm just war.</p></li>
+        <li class="quote"><p>Peace was never mine to keep, only chaos stayed.</p></li>
+        <li class="quote"><p>You spoke of the thorn; I already knew the rose.</p></li>
+        <li class="quote"><p>Between the drought and the flood, I built a home no one visits.</p></li>
+        <li class="quote"><p>What looks like the void from afar is only the echo up close.</p></li>
+    </ul>
+    <p class="empty" id="empty" hidden>No quotes match your search.</p>
+    <div class="more"><button class="btn btn--tonal" id="more" type="button">Show more</button></div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="sec-head"><p class="eyebrow">07</p><h2>Contact</h2></div>
+    <div class="hero__actions">
+      <a class="btn btn--filled" href="https://t.me/Parad0x1905006" target="_blank" rel="noopener noreferrer"><svg class="i"><use href="#i-send"/></svg>Telegram</a>
+      <a class="btn btn--tonal" href="https://github.com/paradox1905006" target="_blank" rel="noopener noreferrer"><svg class="i"><use href="#i-code"/></svg>GitHub</a>
+      <a class="btn btn--outlined" href="https://music.youtube.com/playlist?list=PLEHtCIdEGhBPbINvDarAcWZnPtEkXXf9X" target="_blank" rel="noopener noreferrer"><svg class="i"><use href="#i-music"/></svg>Music Playlist</a>
+    </div>
+  </section>
+</main>
+
+<footer>&copy; @D.Paradox 2026</footer>
+<div class="snackbar" id="snack" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var root = document.documentElement;
+
+  /* Theme toggle (persisted) */
+  $('#themeBtn').addEventListener('click', function () {
+    var next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    $('meta[name="theme-color"]').content = next === 'light' ? '#FEF7FF' : '#141218';
+  });
+
+  /* Elevate app bar on scroll */
+  var bar = $('#appbar');
+  var onScroll = function () { bar.classList.toggle('scrolled', window.scrollY > 8); };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* Typing animation (respects reduced motion) */
+  var title = $('.hero__title'), typed = $('.typed', title), text = title.dataset.text;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    typed.textContent = text; typed.classList.add('done');
+  } else {
+    var n = 0;
+    (function tick() {
+      typed.textContent = text.slice(0, ++n);
+      if (n < text.length) setTimeout(tick, 45); else setTimeout(function () { typed.classList.add('done'); }, 2500);
+    })();
+  }
+
+  /* Scrollspy for the tab row */
+  var tabs = $('#tabs'), links = [].slice.call(tabs.querySelectorAll('.tab'));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) {
+        var on = a.getAttribute('href') === '#' + e.target.id;
+        if (on) { a.setAttribute('aria-current', 'true'); tabs.scrollTo({ left: a.offsetLeft - (tabs.clientWidth - a.offsetWidth) / 2, behavior: 'smooth' }); }
+        else a.removeAttribute('aria-current');
+      });
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  document.querySelectorAll('main section').forEach(function (s) { io.observe(s); });
+
+  /* Snackbar */
+  var snack = $('#snack'), st;
+  function toast(msg) { snack.textContent = msg; snack.classList.add('show'); clearTimeout(st); st = setTimeout(function () { snack.classList.remove('show'); }, 2200); }
+
+  /* Quotes: search, pagination, copy */
+  var items = [].slice.call(document.querySelectorAll('#list .quote'));
+  var PAGE = 12, limit = PAGE, query = '';
+  items.forEach(function (li) {
+    li.dataset.t = li.textContent.toLowerCase();
+    var b = document.createElement('button');
+    b.className = 'icon-btn copy'; b.type = 'button'; b.setAttribute('aria-label', 'Copy quote');
+    b.innerHTML = '<svg class="i"><use href="#i-copy"/></svg>';
+    li.appendChild(b);
+  });
+  $('#list').addEventListener('click', function (e) {
+    var b = e.target.closest('.copy'); if (!b) return;
+    var t = b.parentNode.querySelector('p').innerText.trim();
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast('Quote copied'); }, function () { toast('Copy failed'); });
+  });
+  function render() {
+    var shown = 0, matches = 0;
+    items.forEach(function (li) {
+      var ok = !query || li.dataset.t.indexOf(query) > -1;
+      if (ok) matches++;
+      var vis = ok && shown < limit; if (vis) shown++;
+      li.hidden = !vis;
+    });
+    $('#meta').textContent = 'Showing ' + shown + ' of ' + matches + (query ? ' matching' : '') + ' quotes';
+    $('#empty').hidden = matches > 0;
+    $('#more').parentNode.hidden = shown >= matches;
+  }
+  $('#more').addEventListener('click', function () { limit += PAGE * 2; render(); });
+  $('#q').addEventListener('input', function (e) { query = e.target.value.trim().toLowerCase(); limit = PAGE; render(); });
+  render();
+})();
+</script>
+</body>
+</html>
